@@ -41,7 +41,7 @@ jobs:
           sudo apt-get -y install gcc
           
       - name: Build nso-icon-tool
-        run: ./proj_build.sh --root
+        run: ./proj_build_ci.sh --root
 
       - uses: actions/upload-artifact@v2
         with:

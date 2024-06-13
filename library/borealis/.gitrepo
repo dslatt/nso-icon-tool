@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/dslatt/borealis.git
+	branch = wiliwili
+	commit = 8809d3e2f055ac265550106515e8e35642bb37a5
+	parent = f47c4be4f270c00470ae509a8a16c3757c06efce
+	method = merge
+	cmdver = 0.4.6

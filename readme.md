@@ -11,7 +11,7 @@
         <img src="https://img.shields.io/static/v1?label=version&message=0.1.0&labelColor=111111&color=06f&style=for-the-badge" alt="Version">
     </a>
     <a rel="BUILD" href="https://github.com/dslatt/nso-icon-tool/actions">
-        <img src="https://img.shields.io/github/actions/workflow/status/PoloNX/AtmoPackUpdater/c-cpp.yml?branch=master &labelColor=111111&color=06f&style=for-the-badge" alt=Build>
+        <img src="https://img.shields.io/github/actions/workflow/status/dslatt/nso-icon-tool/build-switch.yml?branch=master &labelColor=111111&color=06f&style=for-the-badge" alt=Build>
     </a>
 </p>
 

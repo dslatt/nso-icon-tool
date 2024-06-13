@@ -1,0 +1,80 @@
+<brls:Box
+    width="auto"
+    height="auto"
+    title="Downloading and Extractng Icons..."
+    justifyContent="center"
+    margin="20"
+    axis="column">
+
+    <brls:Box
+        width="auto"
+        height="auto"
+        justifyContent="flexStart"
+        margin="5"
+        axis="row">
+
+        <brls:Label
+            width="auto"
+            height="50"
+            id="download_status"
+            margin="10"/>
+
+        <brls:Label
+            width="auto"
+            height="50"
+            id="download_text"
+            margin="10"/>
+
+    </brls:Box>
+
+    <brls:Box
+        width="auto"
+        height="auto"
+        justifyContent="flexStart"
+        margin="5"
+        axis="row">
+
+        <brls:Label
+            width="auto"
+            height="50"
+            id="extract_status"
+            margin="10"/>
+
+        <brls:Label
+            width="auto"
+            height="50"
+            id="extract_text"
+            margin="10"/>
+
+    </brls:Box>
+
+
+
+    <brls:Box
+        width="auto"
+        height="auto"
+        justifyContent="center"
+        margin="5"
+        axis="row">
+        <brls:ProgressSpinner
+            width="50"
+            height="50"
+            id="status_spinner"
+            margin="10"
+            size="normal"/>
+
+        <brls:Label
+            width="auto"
+            height="50"
+            id="status_current"
+            margin="10"/>
+
+        <brls:Label
+            width="auto"
+            height="50"
+            id="status_percent"
+            margin="10"/>
+
+    </brls:Box>
+
+</brls:Box>

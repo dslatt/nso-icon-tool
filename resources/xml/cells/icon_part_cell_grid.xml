@@ -1,0 +1,11 @@
+<brls:Box
+    width="auto"
+    height="auto"
+    focusable="true">
+
+    <brls:Image
+        id="image"
+        width="auto"
+        height="auto" />
+
+</brls:Box>

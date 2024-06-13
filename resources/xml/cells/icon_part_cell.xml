@@ -1,0 +1,28 @@
+<brls:Box
+  width="auto"
+  height="auto"
+  focusable="true"
+  paddingTop="1"
+  paddingBottom="1"
+  paddingLeft="1"
+  paddingRight="1">
+
+  <brls:Image
+    id="image"
+    width="128px"
+    height="128px"
+    marginLeft="@style/brls/sidebar/item_accent_margin_sides"
+    marginRight="@style/brls/sidebar/item_accent_margin_sides" />
+
+  <brls:Label
+    id="title"
+    width="auto"
+    height="auto"
+    grow="1.0"
+    fontSize="@style/brls/sidebar/item_font_size"
+    marginTop="@style/brls/sidebar/item_accent_margin_top_bottom"
+    marginBottom="@style/brls/sidebar/item_accent_margin_top_bottom"
+    marginLeft="@style/brls/sidebar/item_accent_margin_sides"
+    marginRight="@style/brls/sidebar/item_accent_margin_sides" />
+
+</brls:Box>

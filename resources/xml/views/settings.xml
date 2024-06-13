@@ -1,0 +1,138 @@
+<brls:Box
+    width="auto"
+    title="Settings"
+    height="auto">
+
+    <brls:ScrollingFrame
+        width="auto"
+        height="auto"
+        axis="column"
+        alignItems="stretch"
+        scrollingBehavior="centered"
+        grow="1.0" >
+        
+        <brls:Box
+            width="10000"
+            height="auto"
+            axis="column"
+            alignItems="stretch"
+            paddingTop="@style/brls/sidebar/padding_top"
+            paddingRight="@style/brls/sidebar/padding_right"
+            paddingBottom="@style/brls/sidebar/padding_bottom"
+            paddingLeft="@style/brls/sidebar/padding_left">
+
+            <brls:Header
+                width="auto"
+                height="auto"
+                title="Icon Cache Update"
+                marginBottom="10px" />
+
+            <brls:Label
+                id="cache_status"  
+                width="auto"
+                height="auto"
+                text="No icon cache found!"
+                marginBottom="10px" />
+                <brls:Box
+                width="auto"
+                height="auto"
+                axis="row">
+            <brls:Label
+                id="check_status"  
+                width="auto"
+                height="auto"
+                text="Last Checked: Never"
+                marginBottom="10px" />
+
+        <brls:ProgressSpinner
+            width="10"
+            height="10"
+            id="status_spinner"
+            margin="10"
+            size="normal"/>
+                </brls:Box>
+
+            <brls:Label
+                id="update_status"  
+                width="auto"
+                height="auto"
+                text="Current Version: None"
+                marginBottom="10px" />
+
+              <brls:Button
+                  id="update_button"
+                  width="auto"
+                  height="auto"
+                  grow="1.0"
+                  text="Check for Updates"
+                marginBottom="10px" />
+
+
+            <brls:Header
+                width="auto"
+                height="auto"
+                title="Settings"
+                marginBottom="10px" />
+
+            <brls:BooleanCell
+                id="debug"/>
+            
+            <brls:BooleanCell
+                id="extract_overwrite"/>
+
+            <brls:Header
+                width="auto"
+                height="auto"
+                title="Version"
+                marginTop="10px"
+                marginBottom="10px" />
+
+            <brls:Label
+                width="auto"
+                height="auto"
+                id="version"
+                marginBottom="10px" />
+            <brls:Label
+                width="auto"
+                height="auto"
+                id="author"
+                marginBottom="10px" />
+            <brls:Label
+                width="auto"
+                height="auto"
+                id="git_sha"
+                marginBottom="10px" />
+            <brls:Label
+                width="auto"
+                height="auto"
+                id="git_date"
+                marginBottom="10px" />
+
+            <brls:Header
+                width="auto"
+                height="auto"
+                title="Thanks"
+                marginTop="10px"
+                marginBottom="10px" />
+
+            <brls:Label
+                width="auto"
+                height="auto"
+                text="▼ Thanks to nadrino for cpp-generic-toolbox library"
+                marginBottom="10px" />
+            <brls:Label
+                width="auto"
+                height="auto"
+                text="▼ Thanks to Natinusala, xfangfang and XITRIX for borealis library"
+                marginBottom="10px" />
+            <brls:Label
+                width="auto"
+                height="auto"
+                text="▼ Thanks to HamletDuFromage (AIO-Switch-Updater) and PoloNX (SimpleModDownloader) which are great examples of how to work on the Switch"
+                marginBottom="10px" />
+
+        </brls:Box>
+
+    </brls:ScrollingFrame>
+
+</brls:Box>

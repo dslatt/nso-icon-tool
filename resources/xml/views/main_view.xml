@@ -1,0 +1,122 @@
+<brls:Box
+  width="auto"
+  height="auto"
+  axis="row">
+
+  <brls:Box
+    width="30%"
+    height="auto"
+    axis="column"
+    alignItems="stretch"
+    justifyContent="center"
+    paddingLeft="50px"
+    paddingRight="20px">
+    <brls:Box
+      width="auto"
+      height="auto"
+      alignItems="center"
+      axis="column"
+      justifyContent="center">
+      <brls:Label
+        width="auto"
+        height="auto"
+        text="None"
+        id="current_user"
+        fontSize="26"
+        marginBottom="20px" />
+
+      <brls:Image
+        id="current_image"
+        width="230px"
+        height="230px"
+        borderThickness="5"
+        cornerRadius="5"
+        borderColor="@theme/brls/applet_frame/separator"
+        marginBottom="5px" />
+    </brls:Box>
+
+    <brls:Header
+      height="auto"
+      width="auto"
+      title="Config" />
+    <brls:DetailCell
+      id="btn_change_user"
+      title="Change User"
+      lineTop="1px"
+    />
+    <brls:DetailCell
+      id="btn_settings"
+      title="Settings"
+    />
+
+  </brls:Box>
+
+  <brls:Box
+    width="30%"
+    height="auto"
+    axis="column"
+    alignItems="stretch"
+    justifyContent="center"
+    paddingLeft="20px"
+    paddingRight="20px">
+    <brls:Header
+      height="auto"
+      width="auto"
+      title="Icon Components" />
+    <brls:DetailCell
+      id="btn_frame"
+      title="Select Frame"
+    />
+    <brls:DetailCell
+      id="btn_character"
+      title="Select Character"
+    />
+    <brls:DetailCell
+      id="btn_background"
+      title="Select Background"
+    />
+
+    <brls:Header
+      marginTop="100px"
+      title="Custom" />
+
+    <brls:DetailCell
+      id="btn_custom"
+      title="Custom Image"
+    />
+  </brls:Box>
+
+  <brls:Box
+    width="40%"
+    height="auto"
+    justifyContent="flexStart"
+    alignItems="center"
+    axis="column"
+    paddingTop="60px">
+
+    <brls:Label
+      width="auto"
+      height="auto"
+      text="New Icon"
+      fontSize="26"
+      marginBottom="20px" />
+
+    <brls:Image
+      id="image"
+      width="340px"
+      height="340px"
+      borderThickness="5px"
+      cornerRadius="5px"
+      borderColor="@theme/brls/applet_frame/separator" />
+
+
+    <brls:Button
+      id="btn_save"
+      width="75%"
+      height="auto"
+      style="primary"
+      text="Apply to User"
+      marginTop="20px" />
+  </brls:Box>
+
+</brls:Box>

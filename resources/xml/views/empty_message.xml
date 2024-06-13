@@ -1,0 +1,26 @@
+<brls:Box
+    width="100%"
+    height="100%"
+  title="Nothing here!"
+  axis="column"
+      alignItems="center"
+      justifyContent="center"
+>
+
+    <brls:Box
+      width="auto"
+      height="auto"
+      alignItems="center"
+      justifyContent="center"
+      axis="row"
+    >
+      <brls:Label
+        width="auto"
+        height="auto"
+        text="Nothing here!"
+        id="missing_msg"
+      />
+    </brls:Box>
+  </brls:Box>
+
+</brls:Box>

@@ -1,0 +1,50 @@
+<brls:Box
+  width="auto"
+  height="auto"
+  title="Select a Game"
+  axis="row"
+>
+
+  <brls:Box
+    width="60%"
+    height="auto">
+    <RecyclingGrid
+      id="recycler"
+      width="auto"
+      height="auto"
+      grow="1.0"
+      itemHeight="128px"
+      flowMode="true"
+      paddingTop="@style/brls/sidebar/padding_top"
+      paddingRight="@style/brls/sidebar/padding_right"
+      paddingBottom="@style/brls/sidebar/padding_bottom"
+      paddingLeft="@style/brls/sidebar/padding_left" />
+  </brls:Box>
+
+
+  <brls:Box
+    width="40%"
+    height="auto"
+    justifyContent="flexStart"
+    alignItems="center"
+    axis="column"
+    paddingTop="60px">
+
+    <brls:Label
+      width="auto"
+      height="auto"
+      text="New Icon"
+      fontSize="26"
+      marginBottom="20px" />
+
+    <brls:Image
+      id="image"
+      width="340px"
+      height="340px"
+      borderThickness="5px"
+      cornerRadius="5px"
+      borderColor="@theme/brls/applet_frame/separator" />
+
+  </brls:Box>
+
+</brls:Box>

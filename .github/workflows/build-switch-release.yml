@@ -2,9 +2,7 @@ name: Switch build
 
 on:
   push:
-      branches: [ dev ]
-  pull_request:
-    types: [opened, reopened]
+      branches: [ main ]
   workflow_dispatch:
     inputs:
       nx:
@@ -43,7 +41,7 @@ jobs:
       - name: Build nso-icon-tool
         run: ./proj_build_ci.sh --root
 
-#      - uses: actions/upload-artifact@v2
-#        with:
-#          name: nso-icon-tool
-#          path: build_switch/nso-icon-tool.nro
+      - uses: actions/upload-artifact@v2
+        with:
+          name: nso-icon-tool
+          path: build_switch/nso-icon-tool.nro

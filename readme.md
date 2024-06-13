@@ -33,16 +33,16 @@
 
 ## Screenshot
 
-![](./screenshots/1.jpg)
+![](./screenshots/screenshot1.jpg)
 
 <details>
   <summary><b>More Screenshots</b></summary>
 
-![](./screenshots/2.jpg)
-![](./screenshots/3.jpg)
-![](./screenshots/4.jpg)
-![](./screenshots/5.jpg)
-![](./screenshots/6.jpg)
+![](./screenshots/screenshot2.jpg)
+![](./screenshots/screenshot3.jpg)
+![](./screenshots/screenshot4.jpg)
+![](./screenshots/screenshot5.jpg)
+![](./screenshots/screenshot6.jpg)
 
 </details>
 

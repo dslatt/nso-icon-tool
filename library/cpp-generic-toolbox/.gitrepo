@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/nadrino/cpp-generic-toolbox.git
+	branch = main
+	commit = 420dd6185887727587209c3b4a5e2f4ef65caa06
+	parent = 606f4dd16f4b18fa2ddcd7b4a173d8db5e8c6eed
+	method = merge
+	cmdver = 0.4.6

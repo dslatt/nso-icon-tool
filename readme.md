@@ -11,7 +11,7 @@
         <img src="https://img.shields.io/static/v1?label=version&message=0.1.0&labelColor=111111&color=06f&style=for-the-badge" alt="Version">
     </a>
     <a rel="BUILD" href="https://github.com/dslatt/nso-icon-tool/actions">
-        <img src="https://img.shields.io/github/actions/workflow/status/dslatt/nso-icon-tool/build-switch.yml?branch=main&labelColor=111111&color=06f&style=for-the-badge" alt=Build>
+        <img src="https://img.shields.io/github/actions/workflow/status/dslatt/nso-icon-tool/build-switch-release.yml?branch=main&labelColor=111111&color=06f&style=for-the-badge" alt=Build>
     </a>
 </p>
 
@@ -63,6 +63,7 @@
 - You can check for updates to the icon cache from settings. If new icons are available, you can downloaded the new cache and update your local copy if desired.
 - The cache is kept in `sdmc:/avatars/nso-icons-main`.
 - For speed, existing files aren't overwritten when updating the cache. If you have an issue, you can use `Overwrite Existing Files During Update` in settings to toggle this behavior.
+- Icon cache location: [https://github.com/henry-debruin/nso-icons](https://github.com/henry-debruin/nso-icons)
 
 
 
@@ -101,11 +102,16 @@ If you want to help me open an issue when you encounter a bug and a pull request
 
 ## Credits 
 
+- Special thanks to [henry-debruin](https://github.com/henry-debruin) for creating [nso-icons](https://github.com/henry-debruin/nso-icons). There's no way this would have been made without your working pulling all the icons together that way!
 - Thanks to [Natinusala](https://github.com/natinusala), [xfangfang](https://github.com/xfangfang) and [XITRIX](https://github.com/XITRIX) for [borealis](https://github.com/xfangfang/borealis)
 - Thanks to [nadrino](https://github.com/nadrino) for [SimpleModManager](https://github.com/nadrino/SimpleModManager) and [cpp-generic-toolbox](https://github.com/nadrino/cpp-generic-toolbox)
 - Thanks to [XorTroll](https://github.com/XoRTroll) for [Golfleaf](https://github.com/XorTroll/Goldleaf)
 - Thanks to [HamletDuFromage ](https://github.com/HamletDuFromage ) for [AIO-Switch-Updater](https://github.com/HamletDuFromage/aio-switch-updater)
 - Thanks to [PoloNX](https://github.com/PoloNX) for [SimpleModDownloader](https://github.com/PoloNX/SimpleModDownloader)
 
+## TODO
 
+- Add translation support.
+- Bugfixes. I'm sure there's some. 
+- Add some notification that an icon cache update is available on startup. Consider adding more details/clarity to the update process as well.
 

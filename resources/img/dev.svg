@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <bx:guide x="-162.523" y="362.246" angle="90"/>
+    <bx:guide x="127.886" y="-43.616" angle="-180"/>
+    <bx:guide x="-154.529" y="134.892" angle="90"/>
+    <filter id="drop-shadow-filter-0" color-interpolation-filters="sRGB" x="-50%" y="-50%" width="200%" height="200%" bx:preset="drop-shadow 1 10 10 0 0.5 rgba(0,0,0,0.3)">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="0"/>
+      <feOffset dx="10" dy="10"/>
+      <feComponentTransfer result="offsetblur">
+        <feFuncA id="spread-ctrl" type="linear" slope="1"/>
+      </feComponentTransfer>
+      <feFlood flood-color="rgba(0,0,0,0.3)"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="drop-shadow-filter-1" color-interpolation-filters="sRGB" x="-50%" y="-50%" width="200%" height="200%" bx:preset="drop-shadow 1 10 10 0 0.5 rgba(0,0,0,0.3)">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="0"/>
+      <feOffset dx="10" dy="10"/>
+      <feComponentTransfer result="offsetblur">
+        <feFuncA id="spread-ctrl" type="linear" slope="1"/>
+      </feComponentTransfer>
+      <feFlood flood-color="rgba(0,0,0,0.3)"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="drop-shadow-filter-2" color-interpolation-filters="sRGB" x="-50%" y="-50%" width="200%" height="200%" bx:preset="drop-shadow 1 10 10 0 0.5 rgba(0,0,0,0.3)">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="0"/>
+      <feOffset dx="10" dy="10"/>
+      <feComponentTransfer result="offsetblur">
+        <feFuncA id="spread-ctrl" type="linear" slope="1"/>
+      </feComponentTransfer>
+      <feFlood flood-color="rgba(0,0,0,0.3)"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <path d="M 260.656 153.098 L 484.457 153.098 L 484.457 376.899 L 260.656 376.899 L 260.656 153.098 Z M 371.453 181.211 C 323.963 181.211 285.463 219.712 285.463 267.203 C 285.463 314.694 323.963 353.195 371.453 353.195 C 418.945 353.195 457.445 314.694 457.445 267.203 C 457.445 219.712 418.945 181.211 371.453 181.211 Z" style="stroke: rgb(0, 0, 0); fill: rgb(230, 0, 18); shape-rendering: crispedges; filter: url('#drop-shadow-filter-0'); stroke-width: 5px;"/>
+  <ellipse style="stroke: rgb(0, 0, 0); fill: rgb(0, 195, 227); paint-order: fill; stroke-width: 5px;" cx="372.065" cy="266.47" rx="71.655" ry="71.655"/>
+  <ellipse style="stroke: rgb(0, 0, 0); fill: rgb(0, 195, 227); filter: url('#drop-shadow-filter-2'); stroke-width: 5px;" cx="136.63" cy="391.213" rx="68.724" ry="68.724"/>
+  <path d="M 29.307 52.299 L 243.953 52.299 L 243.953 266.945 L 29.307 266.945 L 29.307 52.299 Z M 135.571 79.262 C 90.024 79.262 53.099 116.188 53.099 161.736 C 53.099 207.284 90.024 244.21 135.571 244.21 C 181.12 244.21 218.045 207.284 218.045 161.736 C 218.045 116.188 181.12 79.262 135.571 79.262 Z" style="stroke: rgb(0, 0, 0); fill: rgb(230, 0, 18); shape-rendering: crispedges; filter: url('#drop-shadow-filter-1'); stroke-width: 5px;"/>
+</svg>

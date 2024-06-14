@@ -4,7 +4,7 @@
 
   <MainView
     title="nso-icon-tool"
-    icon="@res/img/icon.png"
+    icon="@res/img/dev.png"
   />
 
 

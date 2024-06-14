@@ -1,0 +1,47 @@
+name: Switch build
+
+on:
+  push:
+      branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      nx:
+        description: build for nintendo switch
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  build-nx:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        arch: [x86_64]
+        mode: [debug]
+    
+    runs-on: ${{ matrix.os }}
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    container: devkitpro/devkita64
+
+    steps:
+      - name: Get current date as package key
+        id: cache_key
+        run: echo "key=$(date +'%W')" >> $GITHUB_OUTPUT
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install gcc
+          
+      - name: Build nso-icon-tool
+        run: ./proj_build_ci.sh --root
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: nso-icon-tool
+          path: build_switch/nso-icon-tool.nro

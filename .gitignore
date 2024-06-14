@@ -1,6 +1,5 @@
 build_switch/
 .vscode/
 .devcontainer/
-.github/
 include/GLFW/
 include/version.h

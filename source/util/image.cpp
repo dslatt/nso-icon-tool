@@ -21,7 +21,7 @@ Image::~Image()
 
 Image::Image(const Image &other)
 {
-  unsigned char *data = new unsigned char[other.size];
+  unsigned char *data = malloc(other.size);
   if (data)
   {
     std::memcpy(data, other.img, other.size);

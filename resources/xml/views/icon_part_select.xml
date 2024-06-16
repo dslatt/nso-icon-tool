@@ -1,7 +1,7 @@
 <brls:Box
   width="auto"
   height="auto"
-  title="Select a Game"
+  title="@i18n/app/main/select_game"
   axis="row"
 >
 
@@ -33,7 +33,7 @@
     <brls:Label
       width="auto"
       height="auto"
-      text="New Icon"
+      text="@i18n/app/main/new_icon"
       fontSize="26"
       marginBottom="20px" />
 

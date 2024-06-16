@@ -111,7 +111,6 @@ If you want to help me open an issue when you encounter a bug and a pull request
 
 ## TODO
 
-- Add translation support.
 - Bugfixes. I'm sure there's some. 
 - Add some notification that an icon cache update is available on startup. Consider adding more details/clarity to the update process as well.
 

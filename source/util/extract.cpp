@@ -13,6 +13,8 @@
 
 #include "util/progress_event.hpp"
 
+using namespace brls::literals; // for _i18n
+
 constexpr size_t WRITE_BUFFER_SIZE = 0x10000;
 
 namespace extract
@@ -53,7 +55,7 @@ namespace extract
         brls::Logger::info("Uncompressed size of archive {}: {}. Available: {}", archivePath, uncompressedSize, freeStorage);
         if (uncompressedSize * 1.1 > freeStorage)
         {
-          brls::Application::crash("menus/errors/insufficient_storage");
+          brls::Application::crash("app/errors/insufficient_storage"_i18n);
           std::this_thread::sleep_for(std::chrono::microseconds(2000000));
           brls::Application::quit();
         }

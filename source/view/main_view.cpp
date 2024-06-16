@@ -12,6 +12,8 @@
 #include "GenericToolbox.Switch.h"
 #include "extern/json.hpp"
 
+using namespace brls::literals;
+
 std::vector<CategoryPart> getCategories(std::string subcategory)
 {
   std::vector<CategoryPart> res;
@@ -96,7 +98,7 @@ MainView::MainView()
         image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
       }, [](std::string path, ImageState& state){
         state.updateFrame(path);
-      }) : new EmptyMessage("Nothing here! Check settings to download Icon Cache.");
+      }) : new EmptyMessage("app/errors/nothing_icon_cache"_i18n);
 
       this->present(select);
       return true; });
@@ -113,7 +115,7 @@ MainView::MainView()
         image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
       }, [](std::string path, ImageState& state){
         state.updateCharacter(path);
-      }) : new EmptyMessage("Nothing here! Check settings to download Icon Cache.");
+      }) : new EmptyMessage("app/errors/nothing_icon_cache"_i18n);
 
       this->present(select);
       return true; });
@@ -130,7 +132,7 @@ MainView::MainView()
         image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
       }, [](std::string path, ImageState& state){
         state.updateBackground(path);
-      }) : new EmptyMessage("Nothing here! Check settings to download Icon Cache.");
+      }) : new EmptyMessage("app/errors/nothing_icon_cache"_i18n);
 
       this->present(select);
       return true; });
@@ -151,13 +153,13 @@ MainView::MainView()
         for (auto file : files) {
           brls::Logger::debug("{}", file);
         }
-        auto select = files.size() ? (brls::View*)new grid::IconPartSelectGrid(files, "Available Images", tempState, [this](std::string path) {
+        auto select = files.size() ? (brls::View*)new grid::IconPartSelectGrid(files, "app/main/available_images"_i18n, tempState, [this](std::string path) {
           brls::Logger::info("Recieved {} from selection.", path);
           imageState.updateWorking(path);
           image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
         }, [](std::string path, ImageState &state){
           state.updateWorking(path);
-        }) : new EmptyMessage(fmt::format("Nothing here! Did you place images into \"{}\"?", paths::BasePath));
+        }) : new EmptyMessage(fmt::format("app/errors/nothing_images"_i18n, paths::BasePath));
 
         this->present(select);
         return true; });

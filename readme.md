@@ -43,6 +43,7 @@
 ![](./screenshots/4.jpg)
 ![](./screenshots/5.jpg)
 ![](./screenshots/6.jpg)
+![](./screenshots/7.jpg)
 
 </details>
 
@@ -93,7 +94,7 @@ make -C build_switch nso-icon-tool.nro -j$(nproc)
 ```
 git clone --recursive https://github.com/dslatt/nso-icon-tool/
 cd nso-icon-tool
-/bin/bash proj_build.sh
+./proj_build.sh
  ```
 
 ## Help me

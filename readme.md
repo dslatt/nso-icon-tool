@@ -85,14 +85,14 @@
 
 ```bash
 git clone --recursive https://github.com/dslatt/nso-icon-tool/
-cd SimpleModDownloader
+cd nso-icon-tool
 cmake -B build_switch -DPLATFORM_SWITCH=ON
 make -C build_switch nso-icon-tool.nro -j$(nproc)
 ```
  or
 ```
 git clone --recursive https://github.com/dslatt/nso-icon-tool/
-cd SimpleModDownloader
+cd nso-icon-tool
 /bin/bash proj_build.sh
  ```
 

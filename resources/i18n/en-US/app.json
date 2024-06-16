@@ -38,7 +38,7 @@
       "label": "Version",
       "version": "Version: {}",
       "author": "Author: {}",
-      "commit": "Commit: {} ",
+      "commit": "Commit: {} ({}) ",
       "commit_clean": "clean",
       "commit_dirty": "dirty",
       "commit_date": "Commit Date: {}"

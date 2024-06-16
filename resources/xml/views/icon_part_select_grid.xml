@@ -31,7 +31,7 @@
     <brls:Label
       width="auto"
       height="auto"
-      text="New Icon"
+      text="@i18n/app/main/new_icon"
       fontSize="26"
       marginBottom="20px" />
 

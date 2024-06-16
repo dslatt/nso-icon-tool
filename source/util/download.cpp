@@ -16,6 +16,8 @@
 #include <fmt/format.h>
 #include <switch.h>
 
+using namespace brls::literals; // for _i18n
+
 constexpr const char API_AGENT[] = "nso-icons";
 constexpr int _1MiB = 0x100000;
 
@@ -217,7 +219,7 @@ namespace download
     fclose(chunk.out);
     if (!can_download)
     {
-      brls::Application::crash("menus/errors/insufficient_storage");
+      brls::Application::crash("app/errors/insufficient_storage"_i18n);
       std::this_thread::sleep_for(std::chrono::microseconds(2000000));
       brls::Application::quit();
       res = {};

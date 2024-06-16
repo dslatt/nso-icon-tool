@@ -1,7 +1,7 @@
 <brls:Box
     width="auto"
     height="auto"
-    title="Downloading and Extractng Icons..."
+    title="@i18n/app/download/title"
     justifyContent="center"
     margin="20"
     axis="column">

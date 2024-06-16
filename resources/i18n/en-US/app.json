@@ -1,0 +1,64 @@
+{
+  "title": "nso-icon-tool",
+  "main": {
+    "change_user": "Change User",
+    "config": "Config",
+    "settings": "Settings",
+    "icon_components": "Icon Components",
+    "custom": "Custom",
+    "custom_image": "Custom Image",
+    "frame": "Select Frame",
+    "character": "Select Character",
+    "background": "Select Background",
+    "new_icon": "New Icon",
+    "apply": "Apply to User",
+    "select_game": "Select a Game",
+    "available_images": "Available Images"
+  },
+  "settings": {
+    "title": "Settings",
+    "icon_cache": {
+      "label": "Icon Cache Update",
+      "yes": "Icon Cache Found",
+      "no": "No Icon Cache Found",
+      "last_checked": "Last Checked: {}",
+      "current_version": "Current Version: {} ({})",
+      "check_updates": "Check for Updates",
+      "update_available": "Update Available: {} ({})",
+      "download_update": "Download/Apply Update",
+      "never": "Never",
+      "none": "None"
+    },
+    "toggles": {
+      "label": "Settings",
+      "debug": "Debug Layer",
+      "overwrite": "Overwrite Existing Files During Update"
+    },
+    "version": {
+      "label": "Version",
+      "version": "Version: {}",
+      "author": "Author: {}",
+      "commit": "Commit: {} ",
+      "commit_clean": "clean",
+      "commit_dirty": "dirty",
+      "commit_date": "Commit Date: {}"
+    },
+    "thanks_label": "Thanks",
+    "thanks": "▼ Thanks to nadrino for cpp-generic-toolbox library\n▼ Thanks to Natinusala, xfangfang and XITRIX for borealis library\n▼ Thanks to HamletDuFromage (AIO-Switch-Updater) and PoloNX (SimpleModDownloader)\n▼ Special thanks to henry-debruin for creating nso-icons."
+  },
+  "download": {
+    "title": "Downloading and Extracting Icons...",
+    "downloading": "Downloading:",
+    "waiting": "Waiting:",
+    "downloaded": "Downloaded:",
+    "extracting": "Extracting:",
+    "extracted": "Extracted:",
+    "back": "Back"
+  },
+  "errors": {
+    "insufficient_storage": "Insufficient Storage on SD Card",
+    "nothing": "Nothing Here!",
+    "nothing_icon_cache": "Nothing here! Check settings to download Icon Cache.",
+    "nothing_images": "Nothing here! Did you place images into \"{}\"?"
+  }
+}

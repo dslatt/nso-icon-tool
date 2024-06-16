@@ -36,24 +36,24 @@ using namespace brls::literals; // for _i18n
 void SettingsView::updateUI()
 {
 
-  appVersion->setText(fmt::format("Version: {}", version::AppVersion));
-  appAuthor->setText(fmt::format("Author: {}", version::AppAuthor));
-  gitSha->setText(fmt::format("Commit: {} ({})", version::GitHeadSHA1, version::GitDirty ? "dirty" : "clean"));
-  gitDate->setText(fmt::format("Commit Date: {}", version::GitCommitDate));
+  appVersion->setText(fmt::format("app/settings/version/version"_i18n, version::AppVersion));
+  appAuthor->setText(fmt::format("app/settings/version/author"_i18n, version::AppAuthor));
+  gitSha->setText(fmt::format("app/settings/version/commit"_i18n, version::GitHeadSHA1, version::GitDirty ? "app/settings/version/commit_dirty"_i18n : "app/settings/version/commit_clean"_i18n));
+  gitDate->setText(fmt::format("app/settings/version/commit_date"_i18n, version::GitCommitDate));
 
-  cacheText->setText(GenericToolbox::doesPathIsFolder(paths::IconCachePath) ? "Icon Cache Found" : "No Icon Cache Found");
-  checkText->setText(fmt::format("Last Checked: {}", cacheData.count("checkTime") ? cacheData["checkTime"] : "Never"));
+  cacheText->setText(GenericToolbox::isDir(paths::IconCachePath) ? "app/settings/icon_cache/yes"_i18n : "app/settings/icon_cache/no"_i18n);
+  checkText->setText(fmt::format("app/settings/icon_cache/last_checked"_i18n, cacheData.count("checkTime") ? cacheData["checkTime"] : "app/settings/icon_cache/never"_i18n));
   if (updateState == UpdateState::CHECK)
   {
-    updateText->setText(fmt::format("Current Version: {} (sha {})",
-                                    cacheData.count("updateDate") ? cacheData["updateDate"] : "None",
-                                    cacheData.count("updateSha") ? cacheData["updateSha"] : "None"));
-    updateButton->setText("Check for Updates");
+    updateText->setText(fmt::format("app/settings/icon_cache/current_version"_i18n,
+                                    cacheData.count("updateDate") ? cacheData["updateDate"] : "app/settings/icon_cache/none"_i18n,
+                                    cacheData.count("updateMessage") ? cacheData["updateMessage"] : "app/settings/icon_cache/none"_i18n));
+    updateButton->setText("app/settings/icon_cache/check_updates"_i18n);
   }
   else if (updateState == UpdateState::UPDATE)
   {
-    updateText->setText(fmt::format("Update Available: {} (sha {})", data["updateDate"], data["updateSha"]));
-    updateButton->setText("Download/Apply Update");
+    updateText->setText(fmt::format("app/settings/icon_cache/update_available"_i18n, data["updateDate"], data["updateMessage"]));
+    updateButton->setText("app/settings/icon_cache/download_update"_i18n);
   }
 }
 
@@ -64,14 +64,14 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
 
   checkSpinner->setVisibility(brls::Visibility::INVISIBLE);
 
-  debug->init("Debug Layer", brls::Application::isDebuggingViewEnabled(), [](bool value)
+  debug->init("app/settings/toggles/debug"_i18n, brls::Application::isDebuggingViewEnabled(), [](bool value)
               {
         brls::Application::enableDebuggingView(value);
         brls::sync([value](){
             brls::Logger::info("{} the debug layer", value ? "Open" : "Close");
         }); });
 
-  extract_overwrite->init("Overwrite Existing Files During Update", settings.overwriteDuringExtract, [&settings](bool value)
+  extract_overwrite->init("app/settings/toggles/overwrite"_i18n, settings.overwriteDuringExtract, [&settings](bool value)
                           { settings.overwriteDuringExtract = value;
                             brls::sync([value]()
                                        {
@@ -110,8 +110,6 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
 
           if (!cacheData.count("updateSha") || (!GenericToolbox::isDir(paths::IconCachePath) || GenericToolbox::isDirEmpty(paths::IconCachePath)) || data["updateSha"] != cacheData["updateSha"]) {
             brls::Logger::info("Update available: sha {}, date {}", data["updateSha"], data["updateDate"]);
-            updateText->setText("Update Available");
-            updateButton->setText("Download/Apply Update");
             updateState = UpdateState::UPDATE;
           }
 

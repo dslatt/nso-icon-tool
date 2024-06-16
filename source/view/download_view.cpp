@@ -67,8 +67,8 @@ void DownloadView::updateProgress()
     brls::sync([ASYNC_TOKEN]()
                {
             ASYNC_RELEASE
-            download_status->setText("Downloading:");
-            extract_status->setText("Waiting:"); });
+            download_status->setText("app/download/downloading"_i18n);
+            extract_status->setText("app/download/waiting"_i18n); });
 
     while (ProgressEvent::instance().getTotal() == 0)
     {
@@ -94,8 +94,8 @@ void DownloadView::updateProgress()
     brls::sync([ASYNC_TOKEN]()
                {
             ASYNC_RELEASE
-            download_status->setText("Downloaded:");
-            extract_status->setText("Extracting:"); });
+            download_status->setText("app/download/downloaded"_i18n);
+            extract_status->setText("app/download/extracting"_i18n); });
     while (ProgressEvent::instance().getMax() == 0)
     {
       if (extractFinished)
@@ -122,7 +122,7 @@ void DownloadView::updateProgress()
               this->status_spinner->setVisibility(brls::Visibility::INVISIBLE);
               this->status_current->setText("");
               this->status_percent->setText("");
-              extract_status->setText("Extracted:"); });
+              extract_status->setText("app/download/extracted"_i18n); });
     }
   }
   // CLEANUP
@@ -136,7 +136,7 @@ void DownloadView::updateProgress()
              {
         ASYNC_RELEASE
         auto button = new brls::Button();
-        button->setText("Back");
+        button->setText("app/download/back"_i18n);
         button->setFocusable(true);
         button->registerClickAction(brls::ActionListener([this](brls::View* view) {
             this->dismiss();

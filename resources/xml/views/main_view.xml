@@ -20,7 +20,6 @@
       <brls:Label
         width="auto"
         height="auto"
-        text="None"
         id="current_user"
         fontSize="26"
         marginBottom="20px" />
@@ -38,15 +37,15 @@
     <brls:Header
       height="auto"
       width="auto"
-      title="Config" />
+      title="@i18n/app/main/config" />
     <brls:DetailCell
       id="btn_change_user"
-      title="Change User"
+      title="@i18n/app/main/change_user"
       lineTop="1px"
     />
     <brls:DetailCell
       id="btn_settings"
-      title="Settings"
+      title="@i18n/app/main/settings"
     />
 
   </brls:Box>
@@ -62,27 +61,27 @@
     <brls:Header
       height="auto"
       width="auto"
-      title="Icon Components" />
+      title="@i18n/app/main/icon_components" />
     <brls:DetailCell
       id="btn_frame"
-      title="Select Frame"
+      title="@i18n/app/main/frame"
     />
     <brls:DetailCell
       id="btn_character"
-      title="Select Character"
+      title="@i18n/app/main/character"
     />
     <brls:DetailCell
       id="btn_background"
-      title="Select Background"
+      title="@i18n/app/main/background"
     />
 
     <brls:Header
       marginTop="100px"
-      title="Custom" />
+      title="@i18n/app/main/custom" />
 
     <brls:DetailCell
       id="btn_custom"
-      title="Custom Image"
+      title="@i18n/app/main/custom_image"
     />
   </brls:Box>
 
@@ -97,7 +96,7 @@
     <brls:Label
       width="auto"
       height="auto"
-      text="New Icon"
+      text="@i18n/app/main/new_icon"
       fontSize="26"
       marginBottom="20px" />
 
@@ -115,7 +114,7 @@
       width="75%"
       height="auto"
       style="primary"
-      text="Apply to User"
+      text="@i18n/app/main/apply"
       marginTop="20px" />
   </brls:Box>
 

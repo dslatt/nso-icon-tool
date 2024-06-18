@@ -1,0 +1,64 @@
+{
+  "title": "nso-icon-tool",
+  "main": {
+    "change_user": "Seleccionar Usuario",
+    "config": "Configuración",
+    "settings": "Configuraciones",
+    "icon_components": "Componentes del Ícono",
+    "custom": "Personalizado",
+    "custom_image": "Imágen personalizada",
+    "frame": "Seleccionar Marco",
+    "character": "Seleccionar Personaje",
+    "background": "Seleccionar Fondo",
+    "new_icon": "Nuevo Ícono",
+    "apply": "Aplicar al Usuario",
+    "select_game": "Seleccione un Juego",
+    "available_images": "Imágenes Disponibles"
+  },
+  "settings": {
+    "title": "Configuración",
+    "icon_cache": {
+      "label": "Caché de Íconos",
+      "yes": "Caché de Íconos Encontrada",
+      "no": "No se ha encontrado Caché de Íconos",
+      "last_checked": "Última verificación: {}",
+      "current_version": "Versión Actual: {} ({})",
+      "check_updates": "Buscar Actualizaciones",
+      "update_available": "Actualización Disponible: {} ({})",
+      "download_update": "Descargar/Aplicar Actualización",
+      "never": "Nunca",
+      "none": "Nninguna"
+    },
+    "toggles": {
+      "label": "Configuración",
+      "debug": "Capa de Depuración",
+      "overwrite": "Sobreescribir archivos existentes durante la Actualización"
+    },
+    "version": {
+      "label": "Versión",
+      "version": "Version: {}",
+      "author": "Autor: {}",
+      "commit": "Commit: {} ",
+      "commit_clean": "clean",
+      "commit_dirty": "dirty",
+      "commit_date": "Fecha del Commit: {}"
+    },
+    "thanks_label": "Agradecimientos",
+    "thanks": "▼ Gracias a nadrino por su biblioteca cpp-generic-toolbox \n▼ Gracias a Natinusala, xfangfang and XITRIX por la biblioteca Borealis\n▼ Gracias a HamletDuFromage (AIO-Switch-Updater) and PoloNX (SimpleModDownloader)\n▼ Gracias Especiales a henry-debruin por crear la biblioteca de íconos nso-icons."
+  },
+  "download": {
+    "title": "Descargando y Extrayendo los Íconos...",
+    "downloading": "Descargando:",
+    "waiting": "Esperando:",
+    "downloaded": "Descargados:",
+    "extracting": "Extrayendo:",
+    "extracted": "Extraídos:",
+    "back": "Atrás"
+  },
+  "errors": {
+    "insufficient_storage": "Almacenamiento insuficiente en la tarjeta SD",
+    "nothing": "¡Nada aquí!",
+    "nothing_icon_cache": "¡Nada aquí! verifique las configuraciones de descarga del caché de íconos.",
+    "nothing_images": "¡Nada aquí! ¿Colocaste las imágenes en: \"{}\"?"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "ok": "Aceptar",
+  "cancel": "Cancelar",
+  "back": "Atras",
+  "exit": "Salir",
+  "exit_hint": "Desea salir?",
+  "open": "Abrir",
+  "on": "SI",
+  "off": "NO",
+  "delete": "Borrar",
+  "save": "Guardar",
+  "input": "Por favor ingrese...",
+  "submit": "Guardar"
+}

@@ -32,7 +32,8 @@
     "toggles": {
       "label": "Settings",
       "debug": "Debug Layer",
-      "overwrite": "Overwrite Existing Files During Update"
+      "overwrite": "Overwrite Existing Files During Update",
+      "about": "About"
     },
     "version": {
       "label": "Version",
@@ -53,7 +54,8 @@
     "downloaded": "Downloaded:",
     "extracting": "Extracting:",
     "extracted": "Extracted:",
-    "back": "Back"
+    "back": "Back",
+    "path_to_path": "{} to {}"
   },
   "errors": {
     "insufficient_storage": "Insufficient Storage on SD Card",

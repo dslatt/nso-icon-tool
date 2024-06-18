@@ -16,7 +16,7 @@ DownloadView::DownloadView(std::string url, std::string downloadPath, std::strin
   ProgressEvent::instance().reset();
 
   download_text->setText(url);
-  extract_text->setText(fmt::format("{} to {}", downloadPath, extractPath));
+  extract_text->setText(fmt::format("app/download/path_to_path"_i18n, downloadPath, extractPath));
 
   status_current->setText("");
   status_percent->setText("");

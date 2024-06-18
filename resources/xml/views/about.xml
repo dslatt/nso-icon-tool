@@ -1,6 +1,6 @@
 <brls:Box
     width="auto"
-    title="@i18n/app/settings/title"
+    title="@i18n/app/settings/toggles/about"
     height="auto">
 
     <brls:ScrollingFrame
@@ -24,48 +24,43 @@
             <brls:Header
                 width="auto"
                 height="auto"
-                title="@i18n/app/settings/icon_cache/label"
+                title="@i18n/app/settings/version/label"
+                marginTop="10px"
                 marginBottom="10px" />
 
             <brls:Label
-                id="cache_status"  
                 width="auto"
                 height="auto"
+                id="version"
                 marginBottom="10px" />
             <brls:Label
-                id="check_status"  
                 width="auto"
                 height="auto"
+                id="author"
                 marginBottom="10px" />
             <brls:Label
-                id="update_status"  
                 width="auto"
                 height="auto"
+                id="git_sha"
                 marginBottom="10px" />
-
-              <brls:Button
-                  id="update_button"
-                  width="auto"
-                  height="auto"
-                  grow="1.0"
+            <brls:Label
+                width="auto"
+                height="auto"
+                id="git_date"
                 marginBottom="10px" />
-
 
             <brls:Header
                 width="auto"
                 height="auto"
-                title="@i18n/app/settings/toggles/label"
+                title="@i18n/app/settings/thanks_label"
+                marginTop="10px"
                 marginBottom="10px" />
 
-            <brls:BooleanCell
-                id="debug"/>
-            
-            <brls:BooleanCell
-                id="extract_overwrite"/>
-
-            <brls:DetailCell
-                id="about"
-                title="@i18n/app/settings/toggles/about"/>
+            <brls:Label
+                width="auto"
+                height="auto"
+                text="@i18n/app/settings/thanks"
+                marginBottom="10px" />
 
         </brls:Box>
 

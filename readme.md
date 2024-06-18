@@ -91,7 +91,7 @@ cmake -B build_switch -DPLATFORM_SWITCH=ON
 make -C build_switch nso-icon-tool.nro -j$(nproc)
 ```
  or
-```
+```bash
 git clone --recursive https://github.com/dslatt/nso-icon-tool/
 cd nso-icon-tool
 ./proj_build.sh

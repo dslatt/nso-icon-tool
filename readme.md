@@ -102,11 +102,11 @@ You need a working DevKitPro installation and then install the packages:
 
 #### MingW64:
 ```bash
-pacupd git make cmake mingw-w64-x86_64-gcc switch-cmake libnx switch-dev switch-glfw switch-curl switch-libzstd switch-liblzma switch-liblzma switch-lz4 switch-bzip2
+pacman -Syuu git make cmake mingw-w64-x86_64-gcc switch-cmake libnx switch-dev switch-glfw switch-curl switch-libzstd switch-liblzma switch-liblzma switch-lz4 switch-bzip2
 ```
 #### MSYS
 ```bash
-pacupd git make cmake gcc switch-cmake libnx switch-dev switch-glfw switch-curl switch-libzstd switch-liblzma switch-liblzma switch-lz4 switch-bzip2
+pacman -Syuu git make cmake gcc switch-cmake libnx switch-dev switch-glfw switch-curl switch-libzstd switch-liblzma switch-liblzma switch-lz4 switch-bzip2
 ```
 
 The commands to build are:

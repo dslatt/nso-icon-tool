@@ -1,28 +1,12 @@
-/*
-    Copyright 2021 natinusala
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-*/
-
 #include "view/settings_view.hpp"
+
 #include "view/download_view.hpp"
+#include "view/about_view.hpp"
 
 #include "extern/json.hpp"
 #include "util/download.hpp"
 #include <GenericToolbox.h>
 #include "util/paths.hpp"
-
-#include "version.h"
 
 using json = nlohmann::json;
 
@@ -35,12 +19,6 @@ using namespace brls::literals; // for _i18n
 
 void SettingsView::updateUI()
 {
-
-  appVersion->setText(fmt::format("app/settings/version/version"_i18n, version::AppVersion));
-  appAuthor->setText(fmt::format("app/settings/version/author"_i18n, version::AppAuthor));
-  gitSha->setText(fmt::format("app/settings/version/commit"_i18n, version::GitHeadSHA1, version::GitDirty ? "app/settings/version/commit_dirty"_i18n : "app/settings/version/commit_clean"_i18n));
-  gitDate->setText(fmt::format("app/settings/version/commit_date"_i18n, version::GitCommitDate));
-
   cacheText->setText(GenericToolbox::isDir(paths::IconCachePath) ? "app/settings/icon_cache/yes"_i18n : "app/settings/icon_cache/no"_i18n);
   checkText->setText(fmt::format("app/settings/icon_cache/last_checked"_i18n, cacheData.count("checkTime") ? cacheData["checkTime"] : "app/settings/icon_cache/never"_i18n));
   if (updateState == UpdateState::CHECK)
@@ -62,8 +40,6 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
   // Inflate the tab from the XML file
   this->inflateFromXMLRes("xml/views/settings.xml");
 
-  checkSpinner->setVisibility(brls::Visibility::INVISIBLE);
-
   debug->init("app/settings/toggles/debug"_i18n, brls::Application::isDebuggingViewEnabled(), [](bool value)
               {
         brls::Application::enableDebuggingView(value);
@@ -78,14 +54,17 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
                                         brls::Logger::info("extract check? {}", value ? "Overwrite" : "No Overwrite"); 
                                          }); });
 
+  about->registerClickAction([this](...)
+                          { 
+                            this->present(new AboutView()); 
+                            return true; });
+
   updateButton->registerClickAction([this](...)
                                     {
       if (updateState == UpdateState::CHECK) {
         nlohmann::ordered_json jsondata = {};
 
-        checkSpinner->setVisibility(brls::Visibility::VISIBLE);
-
-        data["checkTime"] = fmt::format("{:%FT%T%Z}", fmt::localtime(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())));
+        data["checkTime"] = fmt::format("{:%FT%TZ}", fmt::gmtime(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())));
         cacheData["checkTime"] = data["checkTime"];
 
         {
@@ -112,8 +91,6 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
             brls::Logger::info("Update available: sha {}, date {}", data["updateSha"], data["updateDate"]);
             updateState = UpdateState::UPDATE;
           }
-
-          checkSpinner->setVisibility(brls::Visibility::INVISIBLE);
         }
       } else if (updateState == UpdateState::UPDATE) {
 

@@ -22,16 +22,11 @@ public:
 
   BRLS_BIND(brls::BooleanCell, debug, "debug");
   BRLS_BIND(brls::BooleanCell, extract_overwrite, "extract_overwrite");
+  BRLS_BIND(brls::DetailCell, about, "about");
   BRLS_BIND(brls::Button, updateButton, "update_button");
   BRLS_BIND(brls::Label, updateText, "update_status");
   BRLS_BIND(brls::Label, checkText, "check_status");
   BRLS_BIND(brls::Label, cacheText, "cache_status");
-  BRLS_BIND(brls::ProgressSpinner, checkSpinner, "status_spinner");
-
-  BRLS_BIND(brls::Label, appVersion, "version");
-  BRLS_BIND(brls::Label, appAuthor, "author");
-  BRLS_BIND(brls::Label, gitSha, "git_sha");
-  BRLS_BIND(brls::Label, gitDate, "git_date");
 
   void updateUI();
 

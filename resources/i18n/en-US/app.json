@@ -7,9 +7,9 @@
     "icon_components": "Icon Components",
     "custom": "Custom",
     "custom_image": "Custom Image",
-    "frame": "Select Frame",
-    "character": "Select Character",
-    "background": "Select Background",
+    "frame": "Frame",
+    "character": "Character",
+    "background": "Background",
     "new_icon": "New Icon",
     "apply": "Apply to User",
     "select_game": "Select a Game",
@@ -32,13 +32,14 @@
     "toggles": {
       "label": "Settings",
       "debug": "Debug Layer",
-      "overwrite": "Overwrite Existing Files During Update"
+      "overwrite": "Overwrite Existing Files During Update",
+      "about": "About"
     },
     "version": {
       "label": "Version",
       "version": "Version: {}",
       "author": "Author: {}",
-      "commit": "Commit: {} ",
+      "commit": "Commit: {} ({}) ",
       "commit_clean": "clean",
       "commit_dirty": "dirty",
       "commit_date": "Commit Date: {}"
@@ -53,7 +54,8 @@
     "downloaded": "Downloaded:",
     "extracting": "Extracting:",
     "extracted": "Extracted:",
-    "back": "Back"
+    "back": "Back",
+    "path_to_path": "{} to {}"
   },
   "errors": {
     "insufficient_storage": "Insufficient Storage on SD Card",

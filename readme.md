@@ -97,6 +97,28 @@ cd nso-icon-tool
 ./proj_build.sh
  ```
 
+#### Using MSYS2
+You need a working DevKitPro installation and then install the packages:
+
+#### MingW64:
+```bash
+pacupd git make cmake mingw-w64-x86_64-gcc switch-cmake libnx switch-dev switch-glfw switch-curl switch-libzstd switch-liblzma switch-liblzma switch-lz4 switch-bzip2
+```
+#### MSYS
+```bash
+pacupd git make cmake gcc switch-cmake libnx switch-dev switch-glfw switch-curl switch-libzstd switch-liblzma switch-liblzma switch-lz4 switch-bzip2
+```
+
+The commands to build are:
+```bash
+cd ~
+rm -rf ~/nso-icon-tool
+clone https://github.com/dslatt/nso-icon-tool
+cd ~/nso-icon-tool
+./proj_build.sh
+
+```
+
 ## Help me
 
 If you want to help me open an issue when you encounter a bug and a pull request if you have a fix. Thanks!

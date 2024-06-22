@@ -113,7 +113,7 @@ The commands to build are:
 ```bash
 cd ~
 rm -rf ~/nso-icon-tool
-clone https://github.com/dslatt/nso-icon-tool
+git clone --recursive https://github.com/dslatt/nso-icon-tool
 cd ~/nso-icon-tool
 ./proj_build.sh
 

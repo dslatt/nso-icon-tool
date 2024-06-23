@@ -106,7 +106,7 @@ namespace account
                               },
                               .buffers = {
                                   {&data, sizeof(data)},
-                                  {(void *)buffer.get(), size},
+                                  {(void *)buffer.get(), (size_t)size},
                               });
     }
 

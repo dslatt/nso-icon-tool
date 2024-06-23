@@ -131,6 +131,8 @@ If you want to help me open an issue when you encounter a bug and a pull request
 - Thanks to [XorTroll](https://github.com/XoRTroll) for [Golfleaf](https://github.com/XorTroll/Goldleaf)
 - Thanks to [HamletDuFromage ](https://github.com/HamletDuFromage ) for [AIO-Switch-Updater](https://github.com/HamletDuFromage/aio-switch-updater)
 - Thanks to [PoloNX](https://github.com/PoloNX) for [SimpleModDownloader](https://github.com/PoloNX/SimpleModDownloader)
+- Thanks to anyone who helped translate!
+
 
 ## TODO
 

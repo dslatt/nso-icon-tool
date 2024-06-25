@@ -138,4 +138,5 @@ If you want to help me open an issue when you encounter a bug and a pull request
 
 - Bugfixes. I'm sure there's some. 
 - Add some notification that an icon cache update is available on startup. Consider adding more details/clarity to the update process as well.
+- Add a collection of previously used/saved avatars for convienient switching.
 

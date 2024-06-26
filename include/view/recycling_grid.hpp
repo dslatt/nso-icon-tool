@@ -90,6 +90,8 @@ public:
    */
   virtual void onItemSelected(RecyclingGrid *recycler, size_t index) {}
 
+  virtual bool onItemAction(RecyclingGrid *recycler, size_t index, brls::ControllerButton button) { return false; }
+
   virtual void clearData() = 0;
 };
 

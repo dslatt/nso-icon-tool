@@ -57,6 +57,8 @@ int main(int argc, char *argv[])
     }
   }
 
+      brls::Logger::setLogLevel(brls::LogLevel::LOG_DEBUG);
+
 #ifdef NDEBUG
   brls::Logger::setLogOutput(fopen(paths::LogFilePath.c_str(), "w"));
 #endif

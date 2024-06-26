@@ -2,6 +2,7 @@
 
 #include "view/icon_part_select.hpp"
 #include "view/icon_part_select_grid.hpp"
+#include "view/collection_grid.hpp"
 #include "view/download_view.hpp"
 #include "view/empty_message.hpp"
 #include "util/uuid.hpp"
@@ -57,11 +58,11 @@ std::vector<CategoryPart> getCategories(std::string subcategory)
   return res;
 }
 
-std::vector<std::string> getCustomImages()
+std::vector<std::string> getImages(std::string path)
 {
   std::vector<std::string> res;
 
-  auto images = GenericToolbox::lsFiles(paths::BasePath);
+  auto images = GenericToolbox::lsFiles(path);
   GenericToolbox::removeEntryIf(images, [](const std::string &entry)
                                 { return !(GenericToolbox::endsWith(entry, ".png") ||
                                            GenericToolbox::endsWith(entry, ".jpg") ||
@@ -70,7 +71,7 @@ std::vector<std::string> getCustomImages()
   for (auto &image : images)
   {
     brls::Logger::debug("img {}", image);
-    res.push_back(GenericToolbox::joinPath(paths::BasePath, image));
+    res.push_back(GenericToolbox::joinPath(path, image));
   }
 
   return res;
@@ -149,7 +150,7 @@ MainView::MainView()
   btnCustom->registerClickAction([this](...)
                                  {
         tempState = imageState;
-        auto files = getCustomImages();
+        auto files = getImages(paths::BasePath);
         for (auto file : files) {
           brls::Logger::debug("{}", file);
         }
@@ -160,6 +161,26 @@ MainView::MainView()
         }, [](std::string path, ImageState &state){
           state.updateWorking(path);
         }) : new EmptyMessage(fmt::format("app/errors/nothing_images"_i18n, paths::BasePath));
+
+        this->present(select);
+        return true; });
+
+  btnCollectionLoad->registerClickAction([this](...)
+                                 {
+        tempState = imageState;
+        auto files = getImages(paths::CollectionPath);
+        for (auto file : files) {
+          brls::Logger::debug("{}", file);
+        }
+
+        auto select = files.size() ? (brls::View*)new collection::CollectionGrid(files, "app/main/available_images"_i18n, tempState, [this](std::string path) {
+          brls::Logger::info("Recieved {} from selection.", path);
+          imageState.updateWorking(path);
+          image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
+        }, [](std::string path, ImageState &state){
+          state.updateWorking(path);
+        }) : new EmptyMessage(fmt::format("app/errors/nothing_images"_i18n, paths::BasePath));
+
 
         this->present(select);
         return true; });

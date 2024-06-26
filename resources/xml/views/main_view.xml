@@ -76,7 +76,16 @@
     />
 
     <brls:Header
-      marginTop="100px"
+      title="@i18n/app/main/collection" />
+
+    <brls:DetailCell
+      id="btn_collection_load"
+      title="@i18n/app/main/collection_load"/>
+    <brls:DetailCell
+      id="btn_collection_save"
+      title="@i18n/app/main/collection_save"/>
+
+    <brls:Header
       title="@i18n/app/main/custom" />
 
     <brls:DetailCell

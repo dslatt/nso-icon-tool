@@ -13,7 +13,10 @@
     "new_icon": "New Icon",
     "apply": "Apply to User",
     "select_game": "Select a Game",
-    "available_images": "Available Images"
+    "available_images": "Available Images",
+    "collection": "Collection",
+    "collection_load": "Load",
+    "collection_save": "Save"
   },
   "settings": {
     "title": "Settings",

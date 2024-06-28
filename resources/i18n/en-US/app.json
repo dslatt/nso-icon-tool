@@ -14,9 +14,8 @@
     "apply": "Apply to User",
     "select_game": "Select a Game",
     "available_images": "Available Images",
-    "collection": "Collection",
-    "collection_load": "Load",
-    "collection_save": "Save"
+    "collection_load": "Previous Icons",
+    "confirm_delete": "Delete Selected" 
   },
   "settings": {
     "title": "Settings",

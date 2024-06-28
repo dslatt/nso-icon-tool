@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <cstring>
+#include <algorithm>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
@@ -122,4 +123,78 @@ bool Image::writeJpg(std::string path)
 bool Image::writePng(std::string path)
 {
   return stbi_write_png(path.c_str(), x, y, 4, img, 0) != 0;
+}
+
+void Image::applyAlpha(float alpha) {
+  Image::multAlpha(*this, std::clamp(alpha, 0.0f, 1.0f)) ;
+}
+
+
+#define RED(px) (uint8_t)(px)
+#define GREEN(px) (uint8_t)(px >> 8)
+#define BLUE(px) (uint8_t)(px >> 16)
+#define ALPHA(px) (uint8_t)(px >> 24)
+#define RGBA(r, g, b, a) ((r & 0xff) | ((g & 0xff) << 8) | ((b & 0xff) << 16) | ((a & 0xff) << 24))
+#define BLEND(a, b, alpha) (((a * alpha) + (b * (255 - alpha))) / 255)
+
+// assumes images same size, little endian, RGBA channels
+void Image::merge(Image &frame, Image &character, Image &background, Image &output)
+{
+  auto total = frame.x * frame.y;
+  auto frameRef = (int *)frame.img;
+  auto characterRef = (int *)character.img;
+  auto backgroundRef = (int *)background.img;
+  auto outputRef = (int *)output.img;
+
+  for (auto i = 0; i < total; i++)
+  {
+    auto frameAlpha = ALPHA(*frameRef);
+    auto characterAlpha = ALPHA(*characterRef);
+    auto backgroundAlpha = ALPHA(*backgroundRef);
+
+    // frame blocking
+    if (frameAlpha == 0xff)
+    {
+      *outputRef = *frameRef;
+      // character blocking
+    }
+    else if (frameAlpha == 0 && characterAlpha == 0xff)
+    {
+      *outputRef = *characterRef;
+      // background only
+    }
+    else if (frameAlpha == 0 && characterAlpha == 0)
+    {
+      *outputRef = *backgroundRef;
+    }
+    // blend
+    else
+    {
+      *outputRef = RGBA(BLEND(RED(*characterRef), RED(*backgroundRef), characterAlpha),
+                        BLEND(GREEN(*characterRef), GREEN(*backgroundRef), characterAlpha),
+                        BLEND(BLUE(*characterRef), BLUE(*backgroundRef), characterAlpha),
+                        0xff);
+
+      *outputRef = RGBA(BLEND(RED(*frameRef), RED(*outputRef), frameAlpha),
+                        BLEND(GREEN(*frameRef), GREEN(*outputRef), frameAlpha),
+                        BLEND(BLUE(*frameRef), BLUE(*outputRef), frameAlpha),
+                        0xff);
+    }
+
+    frameRef++;
+    characterRef++;
+    outputRef++;
+    backgroundRef++;
+  }
+}
+
+void Image::multAlpha(Image& image, float alpha) {
+  auto total = image.x * image.y;
+  auto ref = (int *)image.img;
+
+
+  for (auto i = 0; i < total; i++) {
+    *ref++ = RGBA(RED(*ref), GREEN(*ref), BLUE(*ref), uint8_t(((float)ALPHA(*ref)) * alpha));
+  }
+
 }

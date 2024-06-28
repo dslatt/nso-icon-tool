@@ -76,6 +76,8 @@ public:
     return nullptr;
   }
 
+  virtual void updateCell(RecyclingGridItem* item, size_t index) {}
+
   /*
    * Asks the data source for the height to use for a row in a specified location.
    * Return -1 to use autoscaling.

@@ -16,10 +16,14 @@ RecyclerCell::RecyclerCell()
              { brls::Logger::info("{}: in delete", recycler ? "ok" : "null"); });
   if (recycler)
   {
-    if(recycler->getDataSource()->onItemAction(recycler, index, brls::ControllerButton::BUTTON_X))
+    auto res = recycler->getDataSource()->onItemAction(recycler, index, brls::ControllerButton::BUTTON_X);
+    recycler->getDataSource()->updateCell(this, index);
     {
-      this->prepareForReuse();
-      this->setFocusable(false);
+
+      //this->prepareForReuse();
+      //this->image->setImageFromRes("img/trash.png");
+      //this->setFocusable(false);
+      //recycler->getNextCellFocus(brls::FocusDirection::DOWN, this);
     }
   }
   return true; });
@@ -33,30 +37,90 @@ RecyclerCell *RecyclerCell::create(std::function<void(std::string)> callback)
   return cell;
 }
 
+void RecyclerCell::onFocusGained()
+{
+  Box::onFocusGained();
+  cb(img);
+}
+
+RecyclingGridItem *DataSource::cellForRow(RecyclingGrid *recycler, size_t index)
+{
+  RecyclerCell *item = (RecyclerCell *)recycler->dequeueReusableCell("Cell");
+  brls::Logger::debug("image: {}", items[index].file);
+  item->image->setImageFromMemRGBA(items[index].image.img, items[index].image.x, items[index].image.y);
+  item->img = items[index].file;
+  return item;
+}
+
+void DataSource::onItemSelected(RecyclingGrid *recycler, size_t index)
+{
+  brls::Logger::info("Selected {}", items[index].file);
+  if (!items[index].file.empty()) {
+    onSelected(items[index].file);
+
+    if (parent)
+    {
+      parent->dismiss();
+    }
+  }
+}
+
+void DataSource::updateCell(RecyclingGridItem* item, size_t index)
+{
+  auto cell = dynamic_cast<RecyclerCell*>(item);
+  if (cell) {
+    cell->image->setImageFromMemRGBA(items[index].image.img, items[index].image.x, items[index].image.y);
+  }  
+}
+
+size_t DataSource::getItemCount()
+{
+  return items.size();
+}
+
+void DataSource::clearData()
+{
+  items.clear();
+}
+
 bool DataSource::onItemAction(RecyclingGrid *recycler, size_t index, brls::ControllerButton button)
 {
-  brls::sync([button, file = files[index]]()
+  brls::sync([button, file = items[index].file]()
              { brls::Logger::info("button {}, file {}", (int)button, file); });
   if (button == brls::ControllerButton::BUTTON_X)
   {
-    if (GenericToolbox::rm(files[index]))
-    {
-      brls::sync([this, index]()
-                { brls::Logger::info("Deleted {}", files[index]); });
-      
-      files[index] = "none";
-      return true;
-    }
+    auto select = !items[index].selected;
+    items[index].selected = select;
+    if (select) { items[index].image.applyAlpha(0.5f); }
+    else { items[index].image = Image(items[index].file); }
   }
 
-  return false;
+  return select;
 }
 
-DataSource::DataSource(std::vector<std::string> files, std::function<void(std::string)> onSelected, brls::View *parent) : grid::DataSource(files, onSelected, parent) {}
+DataSource::DataSource(std::vector<CollectionItem> items, std::function<void(std::string)> onSelected, brls::View *parent) : onSelected(onSelected), parent(parent), items(std::move(items)) {}
 
-CollectionGrid::CollectionGrid(const std::vector<std::string> &files, std::string title, ImageState &state, std::function<void(std::string)> onSelected, std::function<void(std::string, ImageState &state)> onFocused) : grid::IconPartSelectGrid{}
+void DataSource::deleteSelected()
+{
+  for(auto& item : items) {
+    if (item.selected) {
+      if (GenericToolbox::rm(item.file))
+      {
+        brls::sync([this, file = item.file]()
+                  { brls::Logger::info("Deleted {}", file); });
+      }
+    }
+  }
+}
+
+CollectionGrid::CollectionGrid(const std::vector<std::string> &files, std::string title, ImageState &state, std::function<void(std::string)> onSelected, std::function<void(std::string, ImageState &state)> onFocused)
 {
   this->inflateFromXMLRes("xml/views/cell_grid.xml");
+
+  std::vector<CollectionItem> items; 
+  for (auto& file : files) {
+   items.push_back(CollectionItem{file, Image(file), false}); 
+  }
 
   workingImage->setImageFromMemRGBA(state.working.img, state.working.x, state.working.y);
   auto view = workingImage.getView();
@@ -65,8 +129,14 @@ CollectionGrid::CollectionGrid(const std::vector<std::string> &files, std::strin
                                                        {
                                                          onFocused(path, state);
                                                          view->setImageFromMemRGBA(state.working.img, state.working.x, state.working.y); }); });
+  auto* data = new collection::DataSource(items, onSelected, this);
+  recycler->setDataSource(data);
 
-  recycler->setDataSource(new collection::DataSource(files, onSelected, this));
+  confirmDelete->registerClickAction([this, data](...) {
+    data->deleteSelected();
+    if (parent) parent->dismiss();
+    return true;
+  });
 
   brls::sync([this, title]()
              { getAppletFrame()->setTitle(title); });

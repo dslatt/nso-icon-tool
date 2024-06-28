@@ -144,6 +144,7 @@ MainView::MainView()
       brls::Logger::info("Icon set for user {}: []", user.base.nickname, res);
       if (res) {
         currentImage->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
+        imageState.working.writeJpg(GenericToolbox::joinPath(paths::CollectionPath, uuid::generate() + ".jpg"));
       }
       return true; });
 

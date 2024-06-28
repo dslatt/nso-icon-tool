@@ -76,7 +76,8 @@
     />
 
     <brls:Header
-      title="@i18n/app/main/custom" />
+      title="@i18n/app/main/other"
+      marginTop="30px"/>
 
     <brls:DetailCell
       id="btn_custom"

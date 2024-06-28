@@ -5,7 +5,7 @@
     "config": "Config",
     "settings": "Settings",
     "icon_components": "Icon Components",
-    "custom": "Custom",
+    "other": "Other",
     "custom_image": "Custom Image",
     "frame": "Frame",
     "character": "Character",
@@ -15,7 +15,7 @@
     "select_game": "Select a Game",
     "available_images": "Available Images",
     "collection_load": "Previous Icons",
-    "confirm_delete": "Delete Selected" 
+    "confirm_delete": "Delete Selected"
   },
   "settings": {
     "title": "Settings",

@@ -47,7 +47,6 @@
       id="confirm_delete"
       width="75%"
       height="auto"
-      style="primary"
       text="@i18n/app/main/confirm_delete"
       marginTop="20px" />
 

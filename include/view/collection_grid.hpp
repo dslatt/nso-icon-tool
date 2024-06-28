@@ -71,7 +71,6 @@ namespace collection {
   public:
     CollectionGrid(const std::vector<std::string> &files, std::string title, ImageState &state, std::function<void(std::string)> onSelected, std::function<void(std::string, ImageState &state)> onFocused);
 
-  private:
     BRLS_BIND(RecyclingGrid, recycler, "recycler");
     BRLS_BIND(brls::Image, workingImage, "image");
     BRLS_BIND(brls::Button, confirmDelete, "confirm_delete");

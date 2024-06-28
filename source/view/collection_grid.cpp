@@ -18,13 +18,6 @@ RecyclerCell::RecyclerCell()
   {
     auto res = recycler->getDataSource()->onItemAction(recycler, index, brls::ControllerButton::BUTTON_X);
     recycler->getDataSource()->updateCell(this, index);
-    {
-
-      //this->prepareForReuse();
-      //this->image->setImageFromRes("img/trash.png");
-      //this->setFocusable(false);
-      //recycler->getNextCellFocus(brls::FocusDirection::DOWN, this);
-    }
   }
   return true; });
 }
@@ -47,6 +40,11 @@ RecyclingGridItem *DataSource::cellForRow(RecyclingGrid *recycler, size_t index)
 {
   RecyclerCell *item = (RecyclerCell *)recycler->dequeueReusableCell("Cell");
   brls::Logger::debug("image: {}", items[index].file);
+
+  if (items[index].image.img == nullptr) {
+    items[index].image = Image(items[index].file);
+  }
+
   item->image->setImageFromMemRGBA(items[index].image.img, items[index].image.x, items[index].image.y);
   item->img = items[index].file;
   return item;
@@ -91,8 +89,18 @@ bool DataSource::onItemAction(RecyclingGrid *recycler, size_t index, brls::Contr
   {
     auto select = !items[index].selected;
     items[index].selected = select;
-    if (select) { items[index].image.applyAlpha(0.5f); }
+    if (select) { items[index].image.applyAlpha(0.15f); }
     else { items[index].image = Image(items[index].file); }
+
+    auto anySelected = std::any_of(items.begin(), items.end(), [](CollectionItem& v){
+      return v.selected;
+    });
+
+    auto* grid = dynamic_cast<CollectionGrid*>(parent);
+    if (grid) {
+      grid->confirmDelete->setVisibility(anySelected ? brls::Visibility::VISIBLE : brls::Visibility::INVISIBLE);
+      grid->confirmDelete->setFocusable(anySelected);
+    }
   }
 
   return select;
@@ -119,17 +127,16 @@ CollectionGrid::CollectionGrid(const std::vector<std::string> &files, std::strin
 
   std::vector<CollectionItem> items; 
   for (auto& file : files) {
-   items.push_back(CollectionItem{file, Image(file), false}); 
+   items.push_back(CollectionItem{file, Image{}, false}); 
   }
 
   workingImage->setImageFromMemRGBA(state.working.img, state.working.x, state.working.y);
-  auto view = workingImage.getView();
-  recycler->registerCell("Cell", [view, &state, onFocused]()
+  recycler->registerCell("Cell", [view = workingImage.getView(), &state, onFocused]()
                          { return RecyclerCell::create([view, &state, onFocused](std::string path)
                                                        {
                                                          onFocused(path, state);
                                                          view->setImageFromMemRGBA(state.working.img, state.working.x, state.working.y); }); });
-  auto* data = new collection::DataSource(items, onSelected, this);
+  auto* data = new collection::DataSource(std::move(items), onSelected, this);
   recycler->setDataSource(data);
 
   confirmDelete->registerClickAction([this, data](...) {
@@ -137,6 +144,8 @@ CollectionGrid::CollectionGrid(const std::vector<std::string> &files, std::strin
     if (parent) parent->dismiss();
     return true;
   });
+  confirmDelete->setVisibility(brls::Visibility::INVISIBLE);
+  confirmDelete->setFocusable(false);
 
   brls::sync([this, title]()
              { getAppletFrame()->setTitle(title); });

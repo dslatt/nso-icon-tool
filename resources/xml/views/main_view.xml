@@ -76,13 +76,15 @@
     />
 
     <brls:Header
-      marginTop="100px"
-      title="@i18n/app/main/custom" />
+      title="@i18n/app/main/other"
+      marginTop="30px"/>
 
     <brls:DetailCell
       id="btn_custom"
-      title="@i18n/app/main/custom_image"
-    />
+      title="@i18n/app/main/custom_image"/>
+    <brls:DetailCell
+      id="btn_collection_load"
+      title="@i18n/app/main/collection_load"/>
   </brls:Box>
 
   <brls:Box

@@ -23,6 +23,8 @@ public:
   BRLS_BIND(brls::DetailCell, btnCustom, "btn_custom");
   BRLS_BIND(brls::DetailCell, btnSettings, "btn_settings");
 
+  BRLS_BIND(brls::DetailCell, btnCollectionLoad, "btn_collection_load");
+
   BRLS_BIND(brls::Label, currentUser, "current_user");
   BRLS_BIND(brls::Image, currentImage, "current_image");
   BRLS_BIND(brls::Image, image, "image");

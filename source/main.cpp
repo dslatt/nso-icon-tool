@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
 {
   GenericToolbox::mkdir(paths::BasePath);
   GenericToolbox::mkdir(paths::BaseAppPath);
+  GenericToolbox::mkdir(paths::CollectionPath);
 
   // We recommend to use INFO for real apps
   for (int i = 1; i < argc; i++)

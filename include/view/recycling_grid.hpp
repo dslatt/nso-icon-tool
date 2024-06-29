@@ -76,6 +76,8 @@ public:
     return nullptr;
   }
 
+  virtual void updateCell(RecyclingGridItem* item, size_t index) {}
+
   /*
    * Asks the data source for the height to use for a row in a specified location.
    * Return -1 to use autoscaling.
@@ -89,6 +91,8 @@ public:
    * Tells the data source a row is selected.
    */
   virtual void onItemSelected(RecyclingGrid *recycler, size_t index) {}
+
+  virtual bool onItemAction(RecyclingGrid *recycler, size_t index, brls::ControllerButton button) { return false; }
 
   virtual void clearData() = 0;
 };

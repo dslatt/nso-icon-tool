@@ -26,4 +26,10 @@ struct Image
   void resize(int x, int y);
   bool writeJpg(std::string path);
   bool writePng(std::string path);
+  void applyAlpha(float alpha);
+
+  std::string hash();
+
+  static void applyAlpha(Image& image, float alpha);
+  static void merge(Image &frame, Image &character, Image &background, Image &output);
 };

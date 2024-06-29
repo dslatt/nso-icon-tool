@@ -18,7 +18,7 @@ include(${BOREALIS_LIBRARY}/cmake/toolchain.cmake)
 # project info
 project(nso-icon-tool)
 set(VERSION_MAJOR "0")
-set(VERSION_MINOR "3")
+set(VERSION_MINOR "4")
 set(VERSION_ALTER "0")
 set(VERSION_BUILD "0")
 set(PROJECT_AUTHOR "dslatt")

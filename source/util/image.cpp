@@ -3,6 +3,7 @@
 #include <utility>
 #include <cstring>
 #include <algorithm>
+#include <fmt/format.h>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
@@ -10,6 +11,8 @@
 #include "extern/nanovg/stb_image.h"
 #include "extern/stb_image_write.h"
 #include "extern/stb_image_resize2.h"
+
+#include <xxhash.h>
 
 Image::~Image()
 {
@@ -126,9 +129,19 @@ bool Image::writePng(std::string path)
 }
 
 void Image::applyAlpha(float alpha) {
-  Image::multAlpha(*this, std::clamp(alpha, 0.0f, 1.0f)) ;
+  Image::applyAlpha(*this, std::clamp(alpha, 0.0f, 1.0f)) ;
 }
 
+std::string Image::hash()
+{
+  if (img)
+  {
+    auto xxh = XXH3_64bits(img, pixels * 4 * sizeof(char));
+    return fmt::format("{}", xxh);
+  }
+
+  return "";
+}
 
 #define RED(px) (uint8_t)(px)
 #define GREEN(px) (uint8_t)(px >> 8)
@@ -188,13 +201,11 @@ void Image::merge(Image &frame, Image &character, Image &background, Image &outp
   }
 }
 
-void Image::multAlpha(Image& image, float alpha) {
+void Image::applyAlpha(Image& image, float alpha) {
   auto total = image.x * image.y;
   auto ref = (int *)image.img;
-
 
   for (auto i = 0; i < total; i++) {
     *ref++ = RGBA(RED(*ref), GREEN(*ref), BLUE(*ref), uint8_t(((float)ALPHA(*ref)) * alpha));
   }
-
 }

@@ -144,7 +144,10 @@ MainView::MainView()
       brls::Logger::info("Icon set for user {}: []", user.base.nickname, res);
       if (res) {
         currentImage->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
-        imageState.working.writeJpg(GenericToolbox::joinPath(paths::CollectionPath, uuid::generate() + ".jpg"));
+
+        // save to collection; hash beforehand to avoid duplicate copies
+        auto path = GenericToolbox::joinPath(paths::CollectionPath, imageState.working.hash() + ".png");
+        if (!GenericToolbox::isFile(path)) { imageState.working.writePng(path); }
       }
       return true; });
 
@@ -180,7 +183,7 @@ MainView::MainView()
           image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
         }, [](std::string path, ImageState &state){
           state.updateWorking(path);
-        }) : new EmptyMessage(fmt::format("app/errors/nothing_images"_i18n, paths::BasePath));
+        }) : new EmptyMessage(fmt::format("app/errors/nothing"_i18n, paths::BasePath));
 
 
         this->present(select);

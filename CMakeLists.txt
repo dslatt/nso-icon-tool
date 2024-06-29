@@ -53,6 +53,8 @@ if (PLATFORM_SWITCH)
         curl z bz2 zstd lzma lz4
         # extract
         minizip
+        # hash
+        xxhash
     )
     list(APPEND MAIN_SRC ${BOREALIS_LIBRARY}/lib/platforms/switch/switch_wrapper.c)
     list(APPEND APP_PLATFORM_INCLUDE ${DEVKITPRO}/portlibs/switch/include)

@@ -99,7 +99,6 @@ bool DataSource::onItemAction(RecyclingGrid *recycler, size_t index, brls::Contr
     auto* grid = dynamic_cast<CollectionGrid*>(parent);
     if (grid) {
       grid->confirmDelete->setVisibility(anySelected ? brls::Visibility::VISIBLE : brls::Visibility::INVISIBLE);
-      grid->confirmDelete->setFocusable(anySelected);
     }
   }
 
@@ -144,8 +143,8 @@ CollectionGrid::CollectionGrid(const std::vector<std::string> &files, std::strin
     if (parent) parent->dismiss();
     return true;
   });
+
   confirmDelete->setVisibility(brls::Visibility::INVISIBLE);
-  confirmDelete->setFocusable(false);
 
   brls::sync([this, title]()
              { getAppletFrame()->setTitle(title); });

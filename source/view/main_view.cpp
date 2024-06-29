@@ -19,8 +19,6 @@ std::vector<CategoryPart> getCategories(std::string subcategory)
 {
   std::vector<CategoryPart> res;
 
-  res.push_back(CategoryPart("none", ""));
-
   auto categories = GenericToolbox::lsDirs(paths::IconCachePath);
   if (categories.size() > 0)
   {
@@ -49,6 +47,11 @@ std::vector<CategoryPart> getCategories(std::string subcategory)
       }
     }
   }
+
+  std::sort(res.begin(), res.end(), [](CategoryPart a, CategoryPart b){
+    return a.name < b.name;
+  });
+  res.insert(res.begin(), CategoryPart{"none", ""});
 
   if (res.size() == 1)
   {

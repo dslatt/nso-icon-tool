@@ -3,13 +3,15 @@
 #include "GenericToolbox.Fs.h"
 #include <vector>
 
+using namespace brls::literals; // for _i18n
+
 using namespace collection;
 
 RecyclerCell::RecyclerCell()
 {
   this->inflateFromXMLRes("xml/cells/icon_part_cell_grid.xml");
-  this->registerAction("Delete", brls::ControllerButton::BUTTON_X, [this](View *view)
-                       {
+  this->registerAction("hints/select"_i18n, brls::BUTTON_X, [this](View *view)
+  {
   auto* recycler = dynamic_cast<RecyclingGrid*>(getParent()->getParent());
 
   brls::sync([recycler]()

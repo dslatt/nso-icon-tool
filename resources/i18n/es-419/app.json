@@ -13,7 +13,9 @@
     "new_icon": "Nuevo Ícono",
     "apply": "Aplicar al Usuario",
     "select_game": "Seleccione un Juego",
-    "available_images": "Imágenes Disponibles"
+    "available_images": "Imágenes Disponibles",
+    "collection_load": "Íconos Anteriores",
+    "confirm_delete": "Borrrar ícono(s) Seleccionado(s)"
   },
   "settings": {
     "title": "Configuración",

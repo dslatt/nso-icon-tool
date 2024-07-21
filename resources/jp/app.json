@@ -1,0 +1,68 @@
+{
+  "title": "nso-icon-tool",
+  "main": {
+    "change_user": "ユーザー変更",
+    "config": "コンフィグ",
+    "settings": "設定",
+    "icon_components": "アイコン部材",
+    "other": "その他",
+    "custom_image": "カスタムイメージ",
+    "frame": "フレーム",
+    "character": "キャラクター",
+    "background": "背景",
+    "new_icon": "New アイコン",
+    "apply": "ユーザーに適用",
+    "select_game": "ゲームを選択",
+    "available_images": "利用可能な画像",
+    "collection_load": "以前のアイコン",
+    "confirm_delete": "選択削除"
+  },
+  "settings": {
+    "title": "設定",
+    "icon_cache": {
+      "label": "アイコンキャッシュの更新",
+      "yes": "アイコンキャッシュが見つかりました",
+      "no": "アイコンキャッシュが見つかりません",
+      "last_checked": "最終チェック: {}",
+      "current_version": "現在のバージョン: {} ({})",
+      "check_updates": "アップデートの確認",
+      "update_available": "アップデート可能: {} ({})",
+      "download_update": "ダウンロード/適用更新 ",
+      "never": "絶対にない",
+      "none": "なし"
+    },
+    "toggles": {
+      "label": "設定",
+      "debug": "デバッグレイヤー",
+      "overwrite": "アップデート中に既存のファイルを上書きする",
+      "about": "概要"
+    },
+    "version": {
+      "label": "バージョン",
+      "version": "バージョン: {}",
+      "author": "作者: {}",
+      "commit": "コミット: {} ({}) ",
+      "commit_clean": "清潔",
+      "commit_dirty": "不潔",
+      "commit_date": "確約日: {}"
+    },
+    "thanks_label": "Thanks",
+    "thanks": "▼ Thanks to nadrino for cpp-generic-toolbox library\n▼ Thanks to Natinusala, xfangfang and XITRIX for borealis library\n▼ Thanks to HamletDuFromage (AIO-Switch-Updater) and PoloNX (SimpleModDownloader)\n▼ Special thanks to henry-debruin for creating nso-icons."
+  },
+  "download": {
+    "title": "アイコンのダウンロードと抽出...",
+    "downloading": "ダウンロード中:",
+    "waiting": "待機中:",
+    "downloaded": "ダウンロードしました:",
+    "extracting": "抽出中:",
+    "extracted": "抽出しました:",
+    "back": "戻る",
+    "path_to_path": "{} から {}"
+  },
+  "errors": {
+    "insufficient_storage": "SDカードのストレージ不足",
+    "nothing": "ここには何もない!",
+    "nothing_icon_cache": "ここには何もありません！アイコンキャッシュをダウンロードする設定を確認してください。",
+    "nothing_images": "ここには何もありません！画像を \"{}\"?"
+  }
+}

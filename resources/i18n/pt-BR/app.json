@@ -1,0 +1,68 @@
+{
+  "title": "nso-icon-tool",
+  "main": {
+    "change_user": "Mudar de usuário",
+    "config": "Config.",
+    "settings": "Configurações",
+    "icon_components": "Componentes de ícones",
+    "other": "Outros",
+    "custom_image": "Imagem personalizada",
+    "frame": "Quadro",
+    "character": "Personagem",
+    "background": "Fundo",
+    "new_icon": "Novo ícone",
+    "apply": "Aplicar ao usuário",
+    "select_game": "Escolha um jogo",
+    "available_images": "Imagens disponíveis",
+    "collection_load": "Ícones anteriores",
+    "confirm_delete": "Apagar selecionados"
+  },
+  "settings": {
+    "title": "Configurações",
+    "icon_cache": {
+      "label": "Atualização do cache de ícones",
+      "yes": "Ícone encontrado",
+      "no": "Nenhum Ícones encontrado",
+      "last_checked": "Última verificação: {}",
+      "current_version": "Versão atual: {} ({})",
+      "check_updates": "Verificar atualizações",
+      "update_available": "Atualização disponível: {} ({})",
+      "download_update": "Baixar/Aplicar atualização",
+      "never": "Nunca",
+      "none": "Nenhum"
+    },
+    "toggles": {
+      "label": "Configurações",
+      "debug": "Camada de depuração",
+      "overwrite": "Substituir arquivos existentes durante a atualização",
+      "about": "Sobre"
+    },
+    "version": {
+      "label": "Versão",
+      "version": "Versão: {}",
+      "author": "Autor: {}",
+      "commit": "Commit: {} ({}) ",
+      "commit_clean": "limpo",
+      "commit_dirty": "sujo",
+      "commit_date": "Data do commit: {}"
+    },
+    "thanks_label": "Agradecimentos",
+    "thanks": "▼ Agradecimentos a nadrino pela biblioteca cpp-generic-toolbox\n▼ Agradecimentos a Natinusala, xfangfang e XITRIX pela biblioteca borealis\n▼ Agradecimentos a HamletDuFromage (AIO-Switch-Updater) e PoloNX (SimpleModDownloader)\n▼ Agradecimentos especiais a henry-debruin pela criação dos nso-icons."
+  },
+  "download": {
+    "title": "Download e extração de ícones...",
+    "downloading": "Baixando:",
+    "waiting": "Esperando:",
+    "downloaded": "Baixado:",
+    "extracting": "Extraindo:",
+    "extracted": "Extraído:",
+    "back": "Voltar",
+    "path_to_path": "{} para {}"
+  },
+  "errors": {
+    "insufficient_storage": "Espaço insuficiente no cartão SD",
+    "nothing": "Não há nada aqui!",
+    "nothing_icon_cache": "Não há nada aqui! Verifique as configurações para baixar o cache de ícones.",
+    "nothing_images": "Não há nada aqui! Você colocou as imagens em \"{}\"?"
+  }
+}

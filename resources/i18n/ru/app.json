@@ -5,15 +5,17 @@
     "config": "Конфигурация",
     "settings": "Настройки",
     "icon_components": "Компоненты иконки",
-    "other": "Пользовательские настройки",
+    "other": "Прочее",
     "custom_image": "Изображение пользователя",
-    "frame": "Выбор рамки",
-    "character": "Выбор персонажа",
-    "background": "Выбор фона",
+    "frame": "Рамка",
+    "character": "Персонаж",
+    "background": "Фон",
     "new_icon": "Новая иконка",
     "apply": "Применить к пользователю",
     "select_game": "Выбор игры",
     "available_images": "Доступные изображения"
+    "collection_load": "Прежние иконки",
+    "confirm_delete": "Удалить выбранное"
   },
   "settings": {
     "title": "Настройки",
@@ -48,7 +50,7 @@
     "thanks": "в–ј Благодарность nadrino за библиотеку cpp-generic-toolbox \nв–ј Благодарность Natinusala, xfangfang и XITRIX за библиотеку borealis\nв–ј Благодарность HamletDuFromage (AIO-Switch-Updater) и PoloNX (SimpleModDownloader)\nв–ј Особая благодарность henry-debruin за создание nso-иконок."
   },
   "download": {
-    "title": "загрузка и извлечение иконок...",
+    "title": "Загрузка и извлечение иконок...",
     "downloading": "Загрузка:",
     "waiting": "Ожидание:",
     "downloaded": "Загружено:",

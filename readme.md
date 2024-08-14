@@ -123,19 +123,15 @@ cd ~/nso-icon-tool
 
 If you want to help me open an issue when you encounter a bug and a pull request if you have a fix. Thanks!
 
-## Credits 
+## Special Thanks
 
-- Special thanks to [henry-debruin](https://github.com/henry-debruin) for creating [nso-icons](https://github.com/henry-debruin/nso-icons). There's no way this would have been made without your working pulling all the icons together that way!
+- Special thanks to [henry-debruin](https://github.com/henry-debruin) and [simon-debruin](https://github.com/simon-debruin) for creating [nso-icons](https://github.com/henry-debruin/nso-icons). There's no way this would have been made without your work pulling all the icons together that way!
+- Thanks to [delta](https://github.com/MCMi460) for creating [nso-applet-api](https://github.com/MCMi460/nso-applet-api) which is used to create the icon dump
+- Also, thanks to [mydough](https://gbatemp.net/members/mydough.571103/) for helping me find the right people to credit for the icon cache
+
+## Credits
+
 - Thanks to [Natinusala](https://github.com/natinusala), [xfangfang](https://github.com/xfangfang) and [XITRIX](https://github.com/XITRIX) for [borealis](https://github.com/xfangfang/borealis)
 - Thanks to [nadrino](https://github.com/nadrino) for [SimpleModManager](https://github.com/nadrino/SimpleModManager) and [cpp-generic-toolbox](https://github.com/nadrino/cpp-generic-toolbox)
-- Thanks to [XorTroll](https://github.com/XoRTroll) for [Golfleaf](https://github.com/XorTroll/Goldleaf)
-- Thanks to [HamletDuFromage ](https://github.com/HamletDuFromage ) for [AIO-Switch-Updater](https://github.com/HamletDuFromage/aio-switch-updater)
-- Thanks to [PoloNX](https://github.com/PoloNX) for [SimpleModDownloader](https://github.com/PoloNX/SimpleModDownloader)
+- Thanks to [XorTroll](https://github.com/XoRTroll) for [Golfleaf](https://github.com/XorTroll/Goldleaf), [HamletDuFromage ](https://github.com/HamletDuFromage ) for [AIO-Switch-Updater](https://github.com/HamletDuFromage/aio-switch-updater), and [PoloNX](https://github.com/PoloNX) for [SimpleModDownloader](https://github.com/PoloNX/SimpleModDownloader). These are all good examples of switch homebrew development.
 - Thanks to anyone who helped translate!
-
-
-## TODO
-
-- Bugfixes. I'm sure there's some. 
-- Add some notification that an icon cache update is available on startup. Consider adding more details/clarity to the update process as well.
-

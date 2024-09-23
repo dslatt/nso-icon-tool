@@ -43,11 +43,11 @@ RecyclingGridItem *DataSource::cellForRow(RecyclingGrid *recycler, size_t index)
   RecyclerCell *item = (RecyclerCell *)recycler->dequeueReusableCell("Cell");
   brls::Logger::debug("image: {}", items[index].file);
 
-  if (items[index].image.img == nullptr) {
+  if (!items[index].image.img) {
     items[index].image = Image(items[index].file);
   }
 
-  item->image->setImageFromMemRGBA(items[index].image.img, items[index].image.x, items[index].image.y);
+  item->image->setImageFromMemRGBA(items[index].image.img.get(), items[index].image.x, items[index].image.y);
   item->img = items[index].file;
   return item;
 }
@@ -69,7 +69,7 @@ void DataSource::updateCell(RecyclingGridItem* item, size_t index)
 {
   auto cell = dynamic_cast<RecyclerCell*>(item);
   if (cell) {
-    cell->image->setImageFromMemRGBA(items[index].image.img, items[index].image.x, items[index].image.y);
+    cell->image->setImageFromMemRGBA(items[index].image.img.get(), items[index].image.x, items[index].image.y);
   }  
 }
 
@@ -87,9 +87,10 @@ bool DataSource::onItemAction(RecyclingGrid *recycler, size_t index, brls::Contr
 {
   brls::sync([button, file = items[index].file]()
              { brls::Logger::info("button {}, file {}", (int)button, file); });
+  auto select = false;
   if (button == brls::ControllerButton::BUTTON_X)
   {
-    auto select = !items[index].selected;
+    select = !items[index].selected;
     items[index].selected = select;
     if (select) { items[index].image.applyAlpha(0.15f); }
     else { items[index].image = Image(items[index].file); }
@@ -131,12 +132,12 @@ CollectionGrid::CollectionGrid(const std::vector<std::string> &files, std::strin
    items.push_back(CollectionItem{file, Image{}, false}); 
   }
 
-  workingImage->setImageFromMemRGBA(state.working.img, state.working.x, state.working.y);
+  workingImage->setImageFromMemRGBA(state.working.img.get(), state.working.x, state.working.y);
   recycler->registerCell("Cell", [view = workingImage.getView(), &state, onFocused]()
                          { return RecyclerCell::create([view, &state, onFocused](std::string path)
                                                        {
                                                          onFocused(path, state);
-                                                         view->setImageFromMemRGBA(state.working.img, state.working.x, state.working.y); }); });
+                                                         view->setImageFromMemRGBA(state.working.img.get(), state.working.x, state.working.y); }); });
   auto* data = new collection::DataSource(std::move(items), onSelected, this);
   recycler->setDataSource(data);
 

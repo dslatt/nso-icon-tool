@@ -59,13 +59,13 @@ IconPartSelectGrid::IconPartSelectGrid(const std::vector<std::string> &files, st
 {
   this->inflateFromXMLRes("xml/views/icon_part_select_grid.xml");
 
-  workingImage->setImageFromMemRGBA(state.working.img, state.working.x, state.working.y);
+  workingImage->setImageFromMemRGBA(state.working.img.get(), state.working.x, state.working.y);
   auto view = workingImage.getView();
   recycler->registerCell("Cell", [view, &state, onFocused]()
                          { return RecyclerCell::create([view, &state, onFocused](std::string path)
                                                        {
                                                          onFocused(path, state);
-                                                         view->setImageFromMemRGBA(state.working.img, state.working.x, state.working.y);
+                                                         view->setImageFromMemRGBA(state.working.img.get(), state.working.x, state.working.y);
                                                        }); });
 
   recycler->setDataSource(new DataSource(files, onSelected, this));

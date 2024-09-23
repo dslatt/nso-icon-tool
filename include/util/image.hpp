@@ -1,15 +1,16 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 struct Image
 {
-  unsigned char *img = nullptr;
+  std::unique_ptr<unsigned char[]> img;
   int size = 0;   // raw size in bytes
   int pixels = 0; // pixel count
   int x = 0, y = 0, n = 0;
 
-  ~Image();
+  ~Image() = default;
 
   Image(const Image &other);
   Image(Image &&other) noexcept;

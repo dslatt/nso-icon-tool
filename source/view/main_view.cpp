@@ -85,68 +85,73 @@ MainView::MainView()
   // Inflate the tab from the XML file
   this->inflateFromXMLRes("xml/views/main_view.xml");
 
-  btnChangeUser->registerClickAction([this](...)
+  btnChangeUser->registerClickAction([this](brls::View*)
                                      {
       handleUserSelection();
       return true; });
 
-  btnFrame->registerClickAction([this](...)
+  btnFrame->registerClickAction([this](brls::View*)
                                 {
       auto files = getCategories("frames");
       for (auto file : files) {
         brls::Logger::debug("{}, {}", file.name, file.icon);
       }
-      auto* select = files.size() ? (brls::View*)new IconPartSelect(files, "frames", imageState, [this](std::string path) {
-        brls::Logger::info("Recieved {} from selection.", path);
-        imageState.updateFrame(path);
-        image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
-      }, [](std::string path, ImageState& state){
-        state.updateFrame(path);
-      }) : new EmptyMessage("app/errors/nothing_icon_cache"_i18n);
+      this->present(
+        files.size() ? (brls::View*)new IconPartSelect(files, "frames", imageState, [this](std::string path) {
+          brls::Logger::info("Recieved {} from selection.", path);
+          imageState.updateFrame(path);
+          image->setImageFromMemRGBA(imageState.working.img.get(), imageState.working.x, imageState.working.y);
+        }, [](std::string path, ImageState& state){
+          state.updateFrame(path);
+        }) : new EmptyMessage("app/errors/nothing_icon_cache"_i18n)
+      );
 
-      this->present(select);
       return true; });
 
-  btnCharacter->registerClickAction([this](...)
+  btnCharacter->registerClickAction([this](brls::View*)
                                     {
       auto files = getCategories("characters");
       for (auto file : files) {
         brls::Logger::debug("{}, {}", file.name, file.icon);
       }
-      auto select = files.size() ? (brls::View*)new IconPartSelect(files, "characters", imageState, [this](std::string path) {
-        brls::Logger::info("Recieved {} from selection.", path);
-        imageState.updateCharacter(path);
-        image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
-      }, [](std::string path, ImageState& state){
-        state.updateCharacter(path);
-      }) : new EmptyMessage("app/errors/nothing_icon_cache"_i18n);
 
-      this->present(select);
+      this->present(
+        files.size() ? static_cast<brls::View*>(new IconPartSelect(files, "characters", imageState, [this](std::string path) {
+          brls::Logger::info("Recieved {} from selection.", path);
+          imageState.updateCharacter(path);
+          image->setImageFromMemRGBA(imageState.working.img.get(), imageState.working.x, imageState.working.y);
+        }, [](std::string path, ImageState& state){
+          state.updateCharacter(path);
+        })) : new EmptyMessage("app/errors/nothing_icon_cache"_i18n)
+      );
+
       return true; });
 
-  btnBackground->registerClickAction([this](...)
+  btnBackground->registerClickAction([this](brls::View*)
                                      {
       auto files = getCategories("backgrounds");
       for (auto file : files) {
         brls::Logger::debug("{}, {}", file.name, file.icon);
       }
-      auto select = files.size() ? (brls::View*)new IconPartSelect(files, "backgrounds", imageState, [this](std::string path) {
-        brls::Logger::info("Recieved {} from selection.", path);
-        imageState.updateBackground(path);
-        image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
-      }, [](std::string path, ImageState& state){
-        state.updateBackground(path);
-      }) : new EmptyMessage("app/errors/nothing_icon_cache"_i18n);
 
-      this->present(select);
+      this->present(
+        files.size() ? static_cast<brls::View*>(new IconPartSelect(files, "backgrounds", imageState, [this](std::string path) {
+          brls::Logger::info("Recieved {} from selection.", path);
+          imageState.updateBackground(path);
+          image->setImageFromMemRGBA(imageState.working.img.get(), imageState.working.x, imageState.working.y);
+        }, [](std::string path, ImageState& state){
+          state.updateBackground(path);
+        })) : new EmptyMessage("app/errors/nothing_icon_cache"_i18n)
+      );
+
       return true; });
 
-  btnSave->registerClickAction([this](...)
+  btnSave->registerClickAction([this](brls::View*)
                                {
       auto res = account::setUserIcon(user, imageState.working);
       brls::Logger::info("Icon set for user {}: []", user.base.nickname, res);
       if (res) {
-        currentImage->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
+        currentImage->setImageFromMemRGBA(imageState.working.img.get(), imageState.working.x, imageState.working.y);
 
         // save to collection; hash beforehand to avoid duplicate copies
         auto path = GenericToolbox::joinPath(paths::CollectionPath, imageState.working.hash() + ".png");
@@ -154,25 +159,27 @@ MainView::MainView()
       }
       return true; });
 
-  btnCustom->registerClickAction([this](...)
+  btnCustom->registerClickAction([this](brls::View*)
                                  {
         tempState = imageState;
         auto files = getImages(paths::BasePath);
         for (auto file : files) {
           brls::Logger::debug("{}", file);
         }
-        auto select = files.size() ? (brls::View*)new grid::IconPartSelectGrid(files, "app/main/available_images"_i18n, tempState, [this](std::string path) {
-          brls::Logger::info("Recieved {} from selection.", path);
-          imageState.updateWorking(path);
-          image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
-        }, [](std::string path, ImageState &state){
-          state.updateWorking(path);
-        }) : new EmptyMessage(fmt::format("app/errors/nothing_images"_i18n, paths::BasePath));
 
-        this->present(select);
+        this->present(
+          files.size() ? static_cast<brls::View*>(new grid::IconPartSelectGrid(files, "app/main/available_images"_i18n, tempState, [this](std::string path) {
+            brls::Logger::info("Recieved {} from selection.", path);
+            imageState.updateWorking(path);
+            image->setImageFromMemRGBA(imageState.working.img.get(), imageState.working.x, imageState.working.y);
+          }, [](std::string path, ImageState &state){
+            state.updateWorking(path);
+          })) : new EmptyMessage(fmt::format(fmt::runtime("app/errors/nothing_images"_i18n), paths::BasePath))
+        );
+
         return true; });
 
-  btnCollectionLoad->registerClickAction([this](...)
+  btnCollectionLoad->registerClickAction([this](brls::View*)
                                  {
         tempState = imageState;
         auto files = getImages(paths::CollectionPath);
@@ -180,23 +187,21 @@ MainView::MainView()
           brls::Logger::debug("{}", file);
         }
 
-        auto select = files.size() ? (brls::View*)new collection::CollectionGrid(files, "app/main/available_images"_i18n, tempState, [this](std::string path) {
-          brls::Logger::info("Recieved {} from selection.", path);
-          imageState.updateWorking(path);
-          image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
-        }, [](std::string path, ImageState &state){
-          state.updateWorking(path);
-        }) : new EmptyMessage(fmt::format("app/errors/nothing"_i18n, paths::BasePath));
+        this->present(
+          files.size() ? static_cast<brls::View*>(new collection::CollectionGrid(files, "app/main/available_images"_i18n, tempState, [this](std::string path) {
+            brls::Logger::info("Recieved {} from selection.", path);
+            imageState.updateWorking(path);
+            image->setImageFromMemRGBA(imageState.working.img.get(), imageState.working.x, imageState.working.y);
+          }, [](std::string path, ImageState &state){
+            state.updateWorking(path);
+          })) : new EmptyMessage(fmt::format(fmt::runtime("app/errors/nothing"_i18n), paths::BasePath))
+        );
 
-
-        this->present(select);
         return true; });
 
-  btnSettings->registerClickAction([this](...)
+  btnSettings->registerClickAction([this](brls::View*)
                                    {
-      auto view = new SettingsView(settings);
-      this->present(view);
-
+      this->present(new SettingsView(settings));
       return true; });
 
   image->allowCaching = false;
@@ -223,7 +228,7 @@ void MainView::handleUserSelection()
     auto image = account::getProfileImage(user);
     brls::Logger::info("Loaded User is {}", user.base.nickname);
     currentUser->setText(user.base.nickname);
-    currentImage->setImageFromMemRGBA(image.img, image.x, image.y);
+    currentImage->setImageFromMemRGBA(image.img.get(), image.x, image.y);
   }
 }
 

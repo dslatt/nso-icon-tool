@@ -1,7 +1,3 @@
-[submodule "library/cpp-generic-toolbox"]
-	path = library/cpp-generic-toolbox
-	url = https://github.com/nadrino/cpp-generic-toolbox.git
-	branch = main
 [submodule "library/borealis"]
 	path = library/borealis
 	url = https://github.com/dslatt/borealis.git

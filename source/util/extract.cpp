@@ -7,9 +7,9 @@
 #include <vector>
 #include <borealis.hpp>
 #include <strings.h>
+#include <filesystem>
 
 #include <switch.h>
-#include <GenericToolbox.Fs.h>
 
 #include "util/progress_event.hpp"
 
@@ -66,12 +66,12 @@ namespace extract
     {
       if (filename.back() == '/')
       {
-        GenericToolbox::mkdir(filename);
+        std::filesystem::create_directories(filename);
         return;
       }
       if (forceCreateTree)
       {
-        GenericToolbox::mkdir(filename);
+        std::filesystem::create_directories(filename);
       }
       void *buf = malloc(WRITE_BUFFER_SIZE);
       FILE *outfile;
@@ -109,7 +109,7 @@ namespace extract
         break;
       }
 
-      if (overwriteExisting || !GenericToolbox::isPathValid(filename))
+      if (overwriteExisting || !std::filesystem::exists(filename))
       {
         ProgressEvent::instance().setMsg(filename);
         extractEntry(filename, zfile);

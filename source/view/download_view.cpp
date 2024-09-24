@@ -5,7 +5,8 @@
 
 #include <regex>
 #include <fmt/format.h>
-#include <GenericToolbox.Fs.h>
+//#include <GenericToolbox.Fs.h>
+#include <filesystem>
 
 using namespace brls::literals;
 
@@ -127,7 +128,7 @@ void DownloadView::updateProgress()
   }
   // CLEANUP
   {
-    GenericToolbox::rm(downloadPath);
+    std::filesystem::remove_all(downloadPath);
   }
 
   // Add a button to go back after the end of the download

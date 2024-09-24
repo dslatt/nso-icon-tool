@@ -2,8 +2,11 @@
 #include "view/icon_part_select.hpp"
 #include "view/icon_part_select_grid.hpp"
 #include <vector>
-#include "GenericToolbox.Switch.h"
+//#include "GenericToolbox.Switch.h"
 #include "util/paths.hpp"
+
+#include <filesystem>
+#include <ranges>
 
 RecyclerCell::RecyclerCell()
 {
@@ -57,14 +60,17 @@ void DataSource::onItemSelected(RecyclingGrid *recycler, size_t index)
     }
   }
 
-  auto path = GenericToolbox::joinPath(paths::IconCachePath, parts[index].name, subcategory);
-  auto files = GenericToolbox::lsFiles(path);
-  GenericToolbox::removeEntryIf(files, [](const std::string &entry)
-                                { return !GenericToolbox::endsWith(entry, ".png"); });
+  auto path = std::filesystem::path(paths::IconCachePath) /= parts[index].name;
+  path /= subcategory;
+  auto files = std::ranges::subrange(std::filesystem::directory_iterator(path), std::filesystem::directory_iterator{}) |
+    std::views::filter([](const std::filesystem::directory_entry &entry) { return entry.is_regular_file() && entry.path().extension() == ".png"; }) |
+    std::views::transform([](const std::filesystem::directory_entry &entry) { return entry.path(); }) |
+    std::ranges::to<std::vector<std::filesystem::path>>();
+
   for (auto &file : files)
   {
-    res.push_back(GenericToolbox::joinPath(path, file));
-    brls::Logger::debug("{}", GenericToolbox::joinPath(path, file));
+    //res.push_back(GenericToolbox::joinPath(path, file));
+    brls::Logger::debug("{}", file.string());
   }
   brls::Logger::debug("total {}", res.size());
 

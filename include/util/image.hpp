@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <filesystem>
 
 struct Image
 {
@@ -25,8 +26,8 @@ struct Image
   Image(unsigned char *buffer, size_t size);
   Image(std::string file);
   void resize(int x, int y);
-  bool writeJpg(std::string path);
-  bool writePng(std::string path);
+  bool writeJpg(std::filesystem::path path);
+  bool writePng(std::filesystem::path path);
   void applyAlpha(float alpha);
 
   std::string hash();

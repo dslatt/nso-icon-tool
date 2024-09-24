@@ -10,41 +10,44 @@
 #include "util/download.hpp"
 
 #define __SWITCH__
-#include "GenericToolbox.Switch.h"
+//#include "GenericToolbox.Switch.h"
 #include "extern/json.hpp"
 
-using namespace brls::literals;
+#include <filesystem>
+#include <ranges>
 
-std::vector<CategoryPart> getCategories(std::string subcategory)
+using namespace brls::literals;
+namespace fs = std::filesystem;
+
+std::vector<CategoryPart> getCategories(std::string_view subcategory)
 {
   std::vector<CategoryPart> res;
 
-  auto categories = GenericToolbox::lsDirs(paths::IconCachePath);
-  if (categories.size() > 0)
-  {
-    GenericToolbox::removeEntryIf(categories, [](const std::string &entry)
-                                  { return GenericToolbox::startsWith(entry, "."); });
-    for (auto &category : categories)
-    {
-      auto path = GenericToolbox::joinPath(paths::IconCachePath, category, subcategory);
-      auto files = GenericToolbox::lsFiles(path);
-      GenericToolbox::removeEntryIf(files, [](const std::string &entry)
-                                    { return GenericToolbox::startsWith(entry, "."); });
+  auto categories = std::ranges::subrange(std::filesystem::directory_iterator(paths::IconCachePath), std::filesystem::directory_iterator{}) |
+    std::views::filter([](const std::filesystem::directory_entry &entry) { return entry.is_directory(); }) |
+    std::views::transform([](const std::filesystem::directory_entry &entry) { return entry.path(); }) |
+    std::ranges::to<std::vector<std::filesystem::path>>();
 
-      if (files.size() >= 1)
-      {
-        path = GenericToolbox::joinPath(paths::IconCachePath, category, "characters");
-        files = GenericToolbox::lsFiles(path);
-        GenericToolbox::removeEntryIf(files, [](const std::string &entry)
-                                      { return !GenericToolbox::endsWith(entry, ".png"); });
+  for (auto &category : categories) {
+    try {
+    auto path = category / subcategory;
 
-        if (files.size() >= 1)
-        {
-          brls::Logger::debug("category {}", category);
-          CategoryPart part{category, GenericToolbox::joinPath(path, files[0])};
-          res.push_back(part);
-        }
+    if (std::filesystem::exists(path) && !std::filesystem::is_empty(path)) {
+      std::filesystem::path iconPath;
+      for (auto &file : std::filesystem::directory_iterator(category / "characters")) {
+        iconPath = file.path();
+        break;
       }
+
+      if (!iconPath.empty()) {
+        brls::Logger::debug("category {}, image {}", category.string(), iconPath.string());
+        CategoryPart part{category.filename(), iconPath.string()};
+        res.push_back(part);
+      }
+    }
+
+    } catch(std::exception &e) {
+      brls::Logger::error("{}", e.what());
     }
   }
 
@@ -61,10 +64,10 @@ std::vector<CategoryPart> getCategories(std::string subcategory)
   return res;
 }
 
-std::vector<std::string> getImages(std::string path)
+std::vector<std::string> getImages(std::string_view path)
 {
   std::vector<std::string> res;
-
+/*
   auto images = GenericToolbox::lsFiles(path);
   GenericToolbox::removeEntryIf(images, [](const std::string &entry)
                                 { return !(GenericToolbox::endsWith(entry, ".png") ||
@@ -76,7 +79,7 @@ std::vector<std::string> getImages(std::string path)
     brls::Logger::debug("img {}", image);
     res.push_back(GenericToolbox::joinPath(path, image));
   }
-
+*/
   return res;
 }
 
@@ -154,8 +157,9 @@ MainView::MainView()
         currentImage->setImageFromMemRGBA(imageState.working.img.get(), imageState.working.x, imageState.working.y);
 
         // save to collection; hash beforehand to avoid duplicate copies
-        auto path = GenericToolbox::joinPath(paths::CollectionPath, imageState.working.hash() + ".png");
-        if (!GenericToolbox::isFile(path)) { imageState.working.writePng(path); }
+        auto path = std::filesystem::path(paths::CollectionPath) /= imageState.working.hash();
+        path /= ".png";
+        if (!std::filesystem::exists(path)) { imageState.working.writePng(path); }
       }
       return true; });
 
@@ -201,7 +205,15 @@ MainView::MainView()
 
   btnSettings->registerClickAction([this](brls::View*)
                                    {
-      this->present(new SettingsView(settings));
+      //this->present(new SettingsView(settings));
+      fs::path path(paths::CacheFilePath);
+
+        brls::sync([path]()
+                  {
+                    brls::Logger::info("path {}", path.string());
+                    brls::Logger::info("path exists {}", fs::exists(path));
+                    brls::Logger::info("path isfile {}", fs::is_regular_file(path));
+                  });
       return true; });
 
   image->allowCaching = false;
@@ -215,7 +227,9 @@ MainView::MainView()
   brls::sync([]()
              { brls::Logger::info("{} the debug layer", true ? "Open" : "Close"); });
 
+        brls::Application::enableDebuggingView(true);
   handleUserSelection();
+
 }
 
 void MainView::handleUserSelection()

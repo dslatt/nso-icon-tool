@@ -3,9 +3,12 @@
 #include <functional>
 #include <string>
 #include <switch.h>
-#include <GenericToolbox.Fs.h>
+#include <fstream>
 #include "util/paths.hpp"
 #include "borealis.hpp"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 namespace account
 {
@@ -63,7 +66,7 @@ namespace account
 
   bool setUserIcon(UserInfo &user, Image &image)
   {
-    auto path = GenericToolbox::joinAsString(paths::BaseAppPath, "tmpicon.jpg");
+    auto path = fs::path(paths::BaseAppPath) /= "tmpicon.jpg";
     image.writeJpg(path);
 
     brls::Logger::info("");
@@ -94,7 +97,7 @@ namespace account
       return false;
 
     {
-      auto size = GenericToolbox::getFileSize(path);
+      auto size = std::filesystem::file_size(path);
       std::unique_ptr<char[]> buffer(new char[size]);
       std::fstream stream(path, std::ios::in);
       stream.read(buffer.get(), size);
@@ -110,7 +113,7 @@ namespace account
                               });
     }
 
-    GenericToolbox::rm(path);
+    std::filesystem::remove_all(path);
     return true;
   }
 }

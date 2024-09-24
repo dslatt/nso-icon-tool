@@ -63,7 +63,7 @@ endif ()
 
 # building target
 program_target(${PROJECT_NAME} "${MAIN_SRC}")
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
+#set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
 
 
 # building release file
@@ -87,5 +87,5 @@ CheckGit("${GIT_WORKING_DIR}" changed)
 GitStateChangedAction()
 
 target_include_directories(${PROJECT_NAME} PRIVATE demo ${APP_PLATFORM_INCLUDE})
-target_compile_options(${PROJECT_NAME} PRIVATE -ffunction-sections -fdata-sections ${APP_PLATFORM_OPTION})
+target_compile_options(${PROJECT_NAME} PRIVATE -ffunction-sections -fdata-sections -std=c++2b ${APP_PLATFORM_OPTION})
 target_link_libraries(${PROJECT_NAME} PRIVATE borealis ${APP_PLATFORM_LIB})

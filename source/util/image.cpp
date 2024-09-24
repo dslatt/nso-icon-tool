@@ -34,6 +34,8 @@ Image::Image(Image &&other) noexcept
   x = std::exchange(other.x, 0);
   y = std::exchange(other.y, 0);
   n = std::exchange(other.n, 0);
+
+  std::swap(img, other.img);
 }
 Image &Image::operator=(const Image &other)
 {
@@ -99,13 +101,15 @@ void Image::resize(int x, int y)
   }
 }
 
-bool Image::writeJpg(std::string path)
+bool Image::writeJpg(std::filesystem::path path)
 {
+  if (path.extension() != ".jpg") path.replace_extension(".jpg");
   return stbi_write_jpg(path.c_str(), x, y, 4, img.get(), 90) != 0;
 }
 
-bool Image::writePng(std::string path)
+bool Image::writePng(std::filesystem::path path)
 {
+  if (path.extension() != ".png") path.replace_extension(".png");
   return stbi_write_png(path.c_str(), x, y, 4, img.get(), 0) != 0;
 }
 

@@ -1,6 +1,6 @@
 
 #include "view/collection_grid.hpp"
-#include "GenericToolbox.Fs.h"
+#include <filesystem>
 #include <vector>
 
 using namespace brls::literals; // for _i18n
@@ -114,7 +114,7 @@ void DataSource::deleteSelected()
 {
   for(auto& item : items) {
     if (item.selected) {
-      if (GenericToolbox::rm(item.file))
+      if (std::filesystem::remove(item.file))
       {
         brls::sync([this, file = item.file]()
                   { brls::Logger::info("Deleted {}", file); });

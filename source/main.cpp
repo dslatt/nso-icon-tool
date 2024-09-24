@@ -22,6 +22,7 @@
 #include <borealis.hpp>
 #include <cstdlib>
 #include <string>
+#include <filesystem>
 
 #include <switch/services/acc.h>
 
@@ -30,15 +31,15 @@
 #include "util/paths.hpp"
 
 #include "view/recycling_grid.hpp"
-#include "GenericToolbox.Fs.h"
 
 using namespace brls::literals; // for _i18n
+namespace fs = std::filesystem;
 
 int main(int argc, char *argv[])
 {
-  GenericToolbox::mkdir(paths::BasePath);
-  GenericToolbox::mkdir(paths::BaseAppPath);
-  GenericToolbox::mkdir(paths::CollectionPath);
+  fs::create_directories(paths::BasePath);
+  fs::create_directories(paths::BaseAppPath);
+  fs::create_directories(paths::CollectionPath);
 
   // We recommend to use INFO for real apps
   for (int i = 1; i < argc; i++)
@@ -59,7 +60,7 @@ int main(int argc, char *argv[])
   }
 
 #ifdef NDEBUG
-  brls::Logger::setLogOutput(fopen(paths::LogFilePath.c_str(), "w"));
+  brls::Logger::setLogOutput(fopen(std::string(paths::LogFilePath).c_str(), "w"));
 #endif
 
   // Init the app and i18n
@@ -94,9 +95,14 @@ int main(int argc, char *argv[])
   // Create and push the main activity to the stack
   brls::Application::pushActivity(new MainActivity());
 
-  // Run the app
-  while (brls::Application::mainLoop())
-    ;
+  try {
+    // Run the app
+    while (brls::Application::mainLoop())
+      ;
+  } catch(const std::exception &e) {
+    brls::Logger::error("Top level exception: {}", e.what());
+    return EXIT_FAILURE;
+  }
 
   // Exit
   return EXIT_SUCCESS;

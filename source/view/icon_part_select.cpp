@@ -46,8 +46,6 @@ RecyclingGridItem *DataSource::cellForRow(RecyclingGrid *recycler, size_t index)
 
 void DataSource::onItemSelected(RecyclingGrid *recycler, size_t index)
 {
-  std::vector<std::string> res;
-
   brls::Logger::info("Selected {} ({})", parts[index].name, parts[index].icon);
 
   if (parts[index].name == "none")
@@ -60,21 +58,18 @@ void DataSource::onItemSelected(RecyclingGrid *recycler, size_t index)
     }
   }
 
-  auto path = std::filesystem::path(paths::IconCachePath) /= parts[index].name;
-  path /= subcategory;
-  auto files = std::ranges::subrange(std::filesystem::directory_iterator(path), std::filesystem::directory_iterator{}) |
+  auto files = std::ranges::subrange(std::filesystem::directory_iterator(std::filesystem::path(paths::IconCachePath) / parts[index].name / subcategory), std::filesystem::directory_iterator{}) |
     std::views::filter([](const std::filesystem::directory_entry &entry) { return entry.is_regular_file() && entry.path().extension() == ".png"; }) |
-    std::views::transform([](const std::filesystem::directory_entry &entry) { return entry.path(); }) |
-    std::ranges::to<std::vector<std::filesystem::path>>();
+    std::views::transform([](const std::filesystem::directory_entry &entry) { return entry.path().string(); }) |
+    std::ranges::to<std::vector<std::string>>();
 
   for (auto &file : files)
   {
-    //res.push_back(GenericToolbox::joinPath(path, file));
-    brls::Logger::debug("{}", file.string());
+    brls::Logger::debug("{}", file);
   }
-  brls::Logger::debug("total {}", res.size());
+  brls::Logger::debug("total {}", files.size());
 
-  recycler->present(new grid::IconPartSelectGrid(res, convertName(parts[index].name), state, [this](std::string icon)
+  recycler->present(new grid::IconPartSelectGrid(files, convertName(parts[index].name), state, [this](std::string icon)
                                                  {
     onSelected(icon);
     if (parent)

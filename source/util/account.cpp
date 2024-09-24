@@ -66,10 +66,8 @@ namespace account
 
   bool setUserIcon(UserInfo &user, Image &image)
   {
-    auto path = fs::path(paths::BaseAppPath) /= "tmpicon.jpg";
+    auto path = fs::path(paths::BaseAppPath) / "tmpicon.jpg";
     image.writeJpg(path);
-
-    brls::Logger::info("");
 
     auto *service = accountGetServiceSession();
     if (!service)

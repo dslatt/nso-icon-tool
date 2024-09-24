@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
+      brls::Logger::setLogLevel(brls::LogLevel::LOG_DEBUG);
   brls::Application::createWindow("demo/title"_i18n);
 
   brls::Application::getPlatform()->setThemeVariant(brls::ThemeVariant::DARK);

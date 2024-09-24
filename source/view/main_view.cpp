@@ -29,7 +29,6 @@ std::vector<CategoryPart> getCategories(std::string_view subcategory)
     std::ranges::to<std::vector<std::filesystem::path>>();
 
   for (auto &category : categories) {
-    try {
     auto path = category / subcategory;
 
     if (std::filesystem::exists(path) && !std::filesystem::is_empty(path)) {
@@ -41,13 +40,8 @@ std::vector<CategoryPart> getCategories(std::string_view subcategory)
 
       if (!iconPath.empty()) {
         brls::Logger::debug("category {}, image {}", category.string(), iconPath.string());
-        CategoryPart part{category.filename(), iconPath.string()};
-        res.push_back(part);
+        res.push_back(CategoryPart{category.filename(), iconPath.string()});
       }
-    }
-
-    } catch(std::exception &e) {
-      brls::Logger::error("{}", e.what());
     }
   }
 
@@ -66,21 +60,10 @@ std::vector<CategoryPart> getCategories(std::string_view subcategory)
 
 std::vector<std::string> getImages(std::string_view path)
 {
-  std::vector<std::string> res;
-/*
-  auto images = GenericToolbox::lsFiles(path);
-  GenericToolbox::removeEntryIf(images, [](const std::string &entry)
-                                { return !(GenericToolbox::endsWith(entry, ".png") ||
-                                           GenericToolbox::endsWith(entry, ".jpg") ||
-                                           GenericToolbox::endsWith(entry, ".jpeg")); });
-
-  for (auto &image : images)
-  {
-    brls::Logger::debug("img {}", image);
-    res.push_back(GenericToolbox::joinPath(path, image));
-  }
-*/
-  return res;
+  return std::ranges::subrange(std::filesystem::directory_iterator(path), std::filesystem::directory_iterator{}) |
+    std::views::filter([](const std::filesystem::directory_entry &entry) { return entry.is_regular_file() && (entry.path().extension() == ".png" || entry.path().extension() == ".jpg" || entry.path().extension() == ".jpeg"); }) |
+    std::views::transform([](const std::filesystem::directory_entry &entry) { return entry.path().string(); }) |
+    std::ranges::to<std::vector<std::string>>();
 }
 
 MainView::MainView()
@@ -152,14 +135,16 @@ MainView::MainView()
   btnSave->registerClickAction([this](brls::View*)
                                {
       auto res = account::setUserIcon(user, imageState.working);
-      brls::Logger::info("Icon set for user {}: []", user.base.nickname, res);
+      brls::Logger::info("Icon set for user {}: {}", user.base.nickname, res);
       if (res) {
         currentImage->setImageFromMemRGBA(imageState.working.img.get(), imageState.working.x, imageState.working.y);
 
         // save to collection; hash beforehand to avoid duplicate copies
-        auto path = std::filesystem::path(paths::CollectionPath) /= imageState.working.hash();
-        path /= ".png";
-        if (!std::filesystem::exists(path)) { imageState.working.writePng(path); }
+        auto path = std::filesystem::path(paths::CollectionPath) / (imageState.working.hash() + ".png");
+        if (!std::filesystem::exists(path)) {
+          res = imageState.working.writePng(path);
+          brls::Logger::info("Writing to previous icons cache {}: {}", path.string(), res ? "success" : "failed");
+        }
       }
       return true; });
 
@@ -205,15 +190,7 @@ MainView::MainView()
 
   btnSettings->registerClickAction([this](brls::View*)
                                    {
-      //this->present(new SettingsView(settings));
-      fs::path path(paths::CacheFilePath);
-
-        brls::sync([path]()
-                  {
-                    brls::Logger::info("path {}", path.string());
-                    brls::Logger::info("path exists {}", fs::exists(path));
-                    brls::Logger::info("path isfile {}", fs::is_regular_file(path));
-                  });
+      this->present(new SettingsView(settings));
       return true; });
 
   image->allowCaching = false;

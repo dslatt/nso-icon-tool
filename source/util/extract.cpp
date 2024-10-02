@@ -11,6 +11,8 @@
 
 #include <switch.h>
 
+#include "util/zipfile.hpp"
+
 #include "util/progress_event.hpp"
 
 using namespace brls::literals; // for _i18n
@@ -28,6 +30,9 @@ namespace extract
 
     s64 getUncompressedSize(const std::string &archivePath)
     {
+      zip::ZipFile archive(archivePath);
+      return archive.getUncompressedSize();
+   
       s64 size = 0;
       unzFile zfile = unzOpen(archivePath.c_str());
       unz_global_info gi;
@@ -89,13 +94,29 @@ namespace extract
   {
     ensureAvailableStorage(archivePath);
 
-    unzFile zfile = unzOpen(archivePath.c_str());
-    unz_global_info gi;
-    unzGetGlobalInfo(zfile, &gi);
+    return;
 
-    ProgressEvent::instance().setTotalSteps(gi.number_entry);
+    zip::ZipFile zipFile(archivePath);
+
+    ProgressEvent::instance().setTotalSteps(zipFile.maxIndex);
     ProgressEvent::instance().setStep(0);
 
+
+    auto i{0};
+    for (auto entry : zipFile) {
+      auto fullPath = workingPath + entry.filename();
+      brls::Logger::info("Extracting {} to {}", entry.filename(), fullPath);
+      if (overwriteExisting || !std::filesystem::exists(fullPath))
+      {
+        ProgressEvent::instance().setMsg(fullPath);
+        entry.extractToFile(fullPath);
+      }
+
+      ProgressEvent::instance().setStep(++i);
+    }
+
+    ProgressEvent::instance().setStep(ProgressEvent::instance().getMax());
+/*
     for (uLong i = 0; i < gi.number_entry; ++i)
     {
       char szFilename[0x301] = "";
@@ -121,5 +142,6 @@ namespace extract
     }
     unzClose(zfile);
     ProgressEvent::instance().setStep(ProgressEvent::instance().getMax());
+    */
   }
 }

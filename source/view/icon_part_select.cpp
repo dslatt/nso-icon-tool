@@ -1,12 +1,14 @@
 
 #include "view/icon_part_select.hpp"
 #include "view/icon_part_select_grid.hpp"
+#include "view/empty_message.hpp"
 #include <vector>
 #include "util/paths.hpp"
 
 #include <filesystem>
 #include <ranges>
 
+using namespace brls::literals;
 namespace fs = std::filesystem;
 
 RecyclerCell::RecyclerCell()
@@ -40,7 +42,13 @@ std::string convertName(std::string name)
 RecyclingGridItem *DataSource::cellForRow(RecyclingGrid *recycler, size_t index)
 {
   RecyclerCell *item = (RecyclerCell *)recycler->dequeueReusableCell("Cell");
-  item->label->setText(convertName(parts[index].name));
+  if (parts[index].name == "none") {
+    item->label->setText("app/settings/icon_cache/none"_i18n);
+  } else if (parts[index].name == "custom") {
+    item->label->setText("app/main/custom_image"_i18n);
+  } else{
+    item->label->setText(convertName(parts[index].name));
+  }
   item->image->setImageFromFile(parts[index].icon);
   return item;
 }
@@ -49,34 +57,54 @@ void DataSource::onItemSelected(RecyclingGrid *recycler, size_t index)
 {
   brls::Logger::info("Selected {} ({})", parts[index].name, parts[index].icon);
 
-  if (parts[index].name == "none")
+  if (parts[index].name == "none" && parent)
   {
-    if (parent)
+    onSelected("");
+    parent->dismiss();
+    return;
+  } else if (parts[index].name == "custom" && parent) {
+    auto files = std::ranges::subrange(fs::directory_iterator(fs::path(paths::BasePath)), fs::directory_iterator{}) |
+      std::views::filter([](const fs::directory_entry &entry) { return entry.is_regular_file() && (entry.path().extension() == ".png" || entry.path().extension() == ".jpg" || entry.path().extension() == ".jpeg"); }) |
+      std::views::transform([](const fs::directory_entry &entry) { return entry.path().string(); }) |
+      std::ranges::to<std::vector<std::string>>();
+
+    for (auto &file : files)
     {
-      onSelected("");
-      parent->dismiss();
-      return;
+      brls::Logger::debug("{}", file);
     }
-  }
+    brls::Logger::debug("total {}", files.size());
 
-  auto files = std::ranges::subrange(fs::directory_iterator(fs::path(paths::IconCachePath) / parts[index].name / subcategory), fs::directory_iterator{}) |
-    std::views::filter([](const fs::directory_entry &entry) { return entry.is_regular_file() && entry.path().extension() == ".png"; }) |
-    std::views::transform([](const fs::directory_entry &entry) { return entry.path().string(); }) |
-    std::ranges::to<std::vector<std::string>>();
+    if (files.empty()) {
+      recycler->present(new EmptyMessage(fmt::format(fmt::runtime("app/errors/nothing_images"_i18n), paths::BasePath)));
+    } else {
+      recycler->present(new grid::IconPartSelectGrid(files, "app/main/available_images"_i18n, state, [this](std::string icon)
+                                                    {
+        onSelected(icon);
+        if (parent)
+        {
+          parent->dismiss();
+        } }, onFocused));
+    }
+  } else {
+    auto files = std::ranges::subrange(fs::directory_iterator(fs::path(paths::IconCachePath) / parts[index].name / subcategory), fs::directory_iterator{}) |
+      std::views::filter([](const fs::directory_entry &entry) { return entry.is_regular_file() && entry.path().extension() == ".png"; }) |
+      std::views::transform([](const fs::directory_entry &entry) { return entry.path().string(); }) |
+      std::ranges::to<std::vector<std::string>>();
 
-  for (auto &file : files)
-  {
-    brls::Logger::debug("{}", file);
-  }
-  brls::Logger::debug("total {}", files.size());
-
-  recycler->present(new grid::IconPartSelectGrid(files, convertName(parts[index].name), state, [this](std::string icon)
-                                                 {
-    onSelected(icon);
-    if (parent)
+    for (auto &file : files)
     {
-      parent->dismiss();
-    } }, onFocused));
+      brls::Logger::debug("{}", file);
+    }
+    brls::Logger::debug("total {}", files.size());
+
+    recycler->present(new grid::IconPartSelectGrid(files, convertName(parts[index].name), state, [this](std::string icon)
+                                                  {
+      onSelected(icon);
+      if (parent)
+      {
+        parent->dismiss();
+      } }, onFocused));
+  }
 }
 
 size_t DataSource::getItemCount()

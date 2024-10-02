@@ -52,6 +52,8 @@ std::expected<std::vector<CategoryPart>, std::string> getCategories(std::string_
     if (res.empty()) {
       return std::unexpected("No categories found");
     } else {
+      // this is slow/stupid but it doesn't matter
+      res.insert(res.begin(), CategoryPart{"custom", ""});
       res.insert(res.begin(), CategoryPart{"none", ""});
       return res;
     }
@@ -226,7 +228,6 @@ MainView::MainView()
   brls::sync([]()
              { brls::Logger::info("{} the debug layer", true ? "Open" : "Close"); });
 
-        brls::Application::enableDebuggingView(true);
   handleUserSelection();
 
 }

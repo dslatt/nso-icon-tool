@@ -8,6 +8,8 @@
 #include <filesystem>
 #include <ranges>
 
+namespace fs = std::filesystem;
+
 RecyclerCell::RecyclerCell()
 {
   this->inflateFromXMLRes("xml/cells/icon_part_cell.xml");
@@ -58,9 +60,9 @@ void DataSource::onItemSelected(RecyclingGrid *recycler, size_t index)
     }
   }
 
-  auto files = std::ranges::subrange(std::filesystem::directory_iterator(std::filesystem::path(paths::IconCachePath) / parts[index].name / subcategory), std::filesystem::directory_iterator{}) |
-    std::views::filter([](const std::filesystem::directory_entry &entry) { return entry.is_regular_file() && entry.path().extension() == ".png"; }) |
-    std::views::transform([](const std::filesystem::directory_entry &entry) { return entry.path().string(); }) |
+  auto files = std::ranges::subrange(fs::directory_iterator(fs::path(paths::IconCachePath) / parts[index].name / subcategory), fs::directory_iterator{}) |
+    std::views::filter([](const fs::directory_entry &entry) { return entry.is_regular_file() && entry.path().extension() == ".png"; }) |
+    std::views::transform([](const fs::directory_entry &entry) { return entry.path().string(); }) |
     std::ranges::to<std::vector<std::string>>();
 
   for (auto &file : files)
@@ -97,7 +99,7 @@ DataSource::DataSource(std::vector<CategoryPart> parts, std::function<void(std::
 IconPartSelect::IconPartSelect(const std::vector<CategoryPart> &files, std::string subcategory, const ImageState &state, std::function<void(std::string)> onSelected, std::function<void(std::string, ImageState &state)> onFocused) : workingState(state)
 {
   this->inflateFromXMLRes("xml/views/icon_part_select.xml");
-  image->setImageFromMemRGBA(workingState.working.img.get(), workingState.working.x, workingState.working.y);
+  image->setImageFromMemRGBA(workingState.working.img, workingState.working.x, workingState.working.y);
   recycler->registerCell("Cell", []()
                          { return RecyclerCell::create(); });
   recycler->setDataSource(new DataSource(files, onSelected, onFocused, this, subcategory, workingState));

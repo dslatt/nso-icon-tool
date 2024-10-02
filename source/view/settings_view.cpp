@@ -18,10 +18,11 @@ const std::string DownloadPath = "https://github.com/henry-debruin/nso-icons/arc
 const std::string TempPath = std::string(paths::BasePath) + "/icon_archive_temp.zip";
 
 using namespace brls::literals; // for _i18n
+namespace fs = std::filesystem;
 
 void SettingsView::updateUI()
 {
-  cacheText->setText(std::filesystem::is_directory(paths::IconCachePath) ? "app/settings/icon_cache/yes"_i18n : "app/settings/icon_cache/no"_i18n);
+  cacheText->setText(fs::is_directory(paths::IconCachePath) ? "app/settings/icon_cache/yes"_i18n : "app/settings/icon_cache/no"_i18n);
   checkText->setText(fmt::format(fmt::runtime("app/settings/icon_cache/last_checked"_i18n), cacheData.count("checkTime") ? cacheData["checkTime"] : "app/settings/icon_cache/never"_i18n));
   if (updateState == UpdateState::CHECK)
   {
@@ -70,7 +71,7 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
         cacheData["checkTime"] = data["checkTime"];
 
         {
-          std::fstream stream(std::filesystem::path(paths::CacheFilePath), std::ios::out);
+          std::fstream stream(fs::path(paths::CacheFilePath), std::ios::out);
           json jdata = cacheData;
           stream << jdata;
 
@@ -89,7 +90,7 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
 
           brls::Logger::info("Update check: sha {}, date {}", data["updateSha"], data["updateDate"]);
 
-          if (!cacheData.count("updateSha") || !std::filesystem::is_directory(paths::IconCachePath) || std::filesystem::is_empty(paths::IconCachePath) || data["updateSha"] != cacheData["updateSha"]) {
+          if (!cacheData.count("updateSha") || !fs::is_directory(paths::IconCachePath) || fs::is_empty(paths::IconCachePath) || data["updateSha"] != cacheData["updateSha"]) {
             brls::Logger::info("Update available: sha {}, date {}", data["updateSha"], data["updateDate"]);
             updateState = UpdateState::UPDATE;
           }
@@ -125,9 +126,9 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
     });
       return true; });
 
-  if (std::filesystem::exists(paths::CacheFilePath))
+  if (fs::exists(paths::CacheFilePath))
   {
-    std::fstream stream(std::filesystem::path(paths::CacheFilePath), std::ios::in);
+    std::fstream stream(fs::path(paths::CacheFilePath), std::ios::in);
     json j = json::parse(stream);
     cacheData = j;
 

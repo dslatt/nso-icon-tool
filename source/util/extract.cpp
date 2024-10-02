@@ -14,6 +14,7 @@
 #include "util/progress_event.hpp"
 
 using namespace brls::literals; // for _i18n
+namespace fs = std::filesystem;
 
 constexpr size_t WRITE_BUFFER_SIZE = 0x10000;
 
@@ -66,12 +67,12 @@ namespace extract
     {
       if (filename.back() == '/')
       {
-        std::filesystem::create_directories(filename);
+        fs::create_directories(filename);
         return;
       }
       if (forceCreateTree)
       {
-        std::filesystem::create_directories(filename);
+        fs::create_directories(filename);
       }
       void *buf = malloc(WRITE_BUFFER_SIZE);
       FILE *outfile;
@@ -109,7 +110,7 @@ namespace extract
         break;
       }
 
-      if (overwriteExisting || !std::filesystem::exists(filename))
+      if (overwriteExisting || !fs::exists(filename))
       {
         ProgressEvent::instance().setMsg(filename);
         extractEntry(filename, zfile);

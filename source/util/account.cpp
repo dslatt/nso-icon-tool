@@ -55,7 +55,7 @@ namespace account
     if (!R_SUCCEEDED(res))
       return image;
 
-    std::unique_ptr<char[]> buffer(new char[imageSize]);
+    auto buffer = std::make_unique<char[]>(imageSize);
     res = accountProfileLoadImage(&user.profile, (void *)buffer.get(), imageSize, &tmpSize);
     if (!R_SUCCEEDED(res))
       return image;
@@ -95,8 +95,8 @@ namespace account
       return false;
 
     {
-      auto size = std::filesystem::file_size(path);
-      std::unique_ptr<char[]> buffer(new char[size]);
+      auto size = fs::file_size(path);
+      auto buffer = std::make_unique<char[]>(size);
       std::fstream stream(path, std::ios::in);
       stream.read(buffer.get(), size);
 
@@ -111,7 +111,7 @@ namespace account
                               });
     }
 
-    std::filesystem::remove_all(path);
+    fs::remove_all(path);
     return true;
   }
 }

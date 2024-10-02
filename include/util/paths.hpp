@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-//#include <filesystem>
 namespace paths
 {
   const std::string_view BasePath = "sdmc:/avatars/";

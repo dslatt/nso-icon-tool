@@ -63,6 +63,8 @@ endif ()
 
 # building target
 program_target(${PROJECT_NAME} "${MAIN_SRC}")
+
+# c++23 not supported by current toolchain cmake version; use compiler flags instead
 #set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
 
 

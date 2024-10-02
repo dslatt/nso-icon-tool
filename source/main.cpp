@@ -37,10 +37,6 @@ namespace fs = std::filesystem;
 
 int main(int argc, char *argv[])
 {
-  fs::create_directories(paths::BasePath);
-  fs::create_directories(paths::BaseAppPath);
-  fs::create_directories(paths::CollectionPath);
-
   // We recommend to use INFO for real apps
   for (int i = 1; i < argc; i++)
   {
@@ -57,6 +53,14 @@ int main(int argc, char *argv[])
     {
       brls::Application::enableDebuggingView(true);
     }
+  }
+
+  try {
+    // create expected directories; these need to exist for the app to work
+    fs::create_directories(paths::CollectionPath);
+  } catch(const std::exception &e) {
+    brls::Logger::error("Error creating expected directories; Cant continue: {}", e.what());
+    return EXIT_FAILURE;
   }
 
 #ifdef NDEBUG

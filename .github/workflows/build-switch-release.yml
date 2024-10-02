@@ -43,7 +43,7 @@ jobs:
       - name: Build nso-icon-tool
         run: ./proj_build_ci.sh --root
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: nso-icon-tool
           path: build_switch/nso-icon-tool.nro

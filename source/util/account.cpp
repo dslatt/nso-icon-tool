@@ -3,9 +3,12 @@
 #include <functional>
 #include <string>
 #include <switch.h>
-#include <GenericToolbox.Fs.h>
+#include <fstream>
 #include "util/paths.hpp"
 #include "borealis.hpp"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 namespace account
 {
@@ -52,7 +55,7 @@ namespace account
     if (!R_SUCCEEDED(res))
       return image;
 
-    std::unique_ptr<char[]> buffer(new char[imageSize]);
+    auto buffer = std::make_unique<char[]>(imageSize);
     res = accountProfileLoadImage(&user.profile, (void *)buffer.get(), imageSize, &tmpSize);
     if (!R_SUCCEEDED(res))
       return image;
@@ -63,10 +66,8 @@ namespace account
 
   bool setUserIcon(UserInfo &user, Image &image)
   {
-    auto path = GenericToolbox::joinAsString(paths::BaseAppPath, "tmpicon.jpg");
+    auto path = fs::path(paths::BaseAppPath) / "tmpicon.jpg";
     image.writeJpg(path);
-
-    brls::Logger::info("");
 
     auto *service = accountGetServiceSession();
     if (!service)
@@ -94,8 +95,8 @@ namespace account
       return false;
 
     {
-      auto size = GenericToolbox::getFileSize(path);
-      std::unique_ptr<char[]> buffer(new char[size]);
+      auto size = fs::file_size(path);
+      auto buffer = std::make_unique<char[]>(size);
       std::fstream stream(path, std::ios::in);
       stream.read(buffer.get(), size);
 
@@ -110,7 +111,7 @@ namespace account
                               });
     }
 
-    GenericToolbox::rm(path);
+    fs::remove(path);
     return true;
   }
 }

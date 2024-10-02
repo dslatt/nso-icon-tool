@@ -1,10 +1,11 @@
 #pragma once
 
 #include <string>
+#include <filesystem>
 
 struct Image
 {
-  unsigned char *img = nullptr;
+  unsigned char* img = nullptr;
   int size = 0;   // raw size in bytes
   int pixels = 0; // pixel count
   int x = 0, y = 0, n = 0;
@@ -24,8 +25,8 @@ struct Image
   Image(unsigned char *buffer, size_t size);
   Image(std::string file);
   void resize(int x, int y);
-  bool writeJpg(std::string path);
-  bool writePng(std::string path);
+  bool writeJpg(std::filesystem::path path);
+  bool writePng(std::filesystem::path path);
   void applyAlpha(float alpha);
 
   std::string hash();

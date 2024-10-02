@@ -5,7 +5,7 @@
 
 #include <regex>
 #include <fmt/format.h>
-#include <GenericToolbox.Fs.h>
+#include <filesystem>
 
 using namespace brls::literals;
 
@@ -16,7 +16,7 @@ DownloadView::DownloadView(std::string url, std::string downloadPath, std::strin
   ProgressEvent::instance().reset();
 
   download_text->setText(url);
-  extract_text->setText(fmt::format("app/download/path_to_path"_i18n, downloadPath, extractPath));
+  extract_text->setText(fmt::format(fmt::runtime("app/download/path_to_path"_i18n), downloadPath, extractPath));
 
   status_current->setText("");
   status_percent->setText("");
@@ -127,7 +127,7 @@ void DownloadView::updateProgress()
   }
   // CLEANUP
   {
-    GenericToolbox::rm(downloadPath);
+    std::filesystem::remove(downloadPath);
   }
 
   // Add a button to go back after the end of the download

@@ -5,7 +5,8 @@
 
 #include "extern/json.hpp"
 #include "util/download.hpp"
-#include <GenericToolbox.h>
+#include <filesystem>
+#include <fstream>
 #include "util/paths.hpp"
 
 using json = nlohmann::json;
@@ -13,24 +14,25 @@ using json = nlohmann::json;
 const std::string ApiPath = "http://api.github.com/repos/henry-debruin/nso-icons/branches/main";
 const std::string DownloadPath = "https://github.com/henry-debruin/nso-icons/archive/refs/heads/main.zip";
 
-const std::string TempPath = paths::BasePath + "icon_archive_temp.zip";
+const std::string TempPath = std::string(paths::BasePath) + "icon_archive_temp.zip";
 
 using namespace brls::literals; // for _i18n
+namespace fs = std::filesystem;
 
 void SettingsView::updateUI()
 {
-  cacheText->setText(GenericToolbox::isDir(paths::IconCachePath) ? "app/settings/icon_cache/yes"_i18n : "app/settings/icon_cache/no"_i18n);
-  checkText->setText(fmt::format("app/settings/icon_cache/last_checked"_i18n, cacheData.count("checkTime") ? cacheData["checkTime"] : "app/settings/icon_cache/never"_i18n));
+  cacheText->setText(fs::is_directory(paths::IconCachePath) ? "app/settings/icon_cache/yes"_i18n : "app/settings/icon_cache/no"_i18n);
+  checkText->setText(fmt::format(fmt::runtime("app/settings/icon_cache/last_checked"_i18n), cacheData.count("checkTime") ? cacheData["checkTime"] : "app/settings/icon_cache/never"_i18n));
   if (updateState == UpdateState::CHECK)
   {
-    updateText->setText(fmt::format("app/settings/icon_cache/current_version"_i18n,
+    updateText->setText(fmt::format(fmt::runtime("app/settings/icon_cache/current_version"_i18n),
                                     cacheData.count("updateDate") ? cacheData["updateDate"] : "app/settings/icon_cache/none"_i18n,
                                     cacheData.count("updateMessage") ? cacheData["updateMessage"] : "app/settings/icon_cache/none"_i18n));
     updateButton->setText("app/settings/icon_cache/check_updates"_i18n);
   }
   else if (updateState == UpdateState::UPDATE)
   {
-    updateText->setText(fmt::format("app/settings/icon_cache/update_available"_i18n, data["updateDate"], data["updateMessage"]));
+    updateText->setText(fmt::format(fmt::runtime("app/settings/icon_cache/update_available"_i18n), data["updateDate"], data["updateMessage"]));
     updateButton->setText("app/settings/icon_cache/download_update"_i18n);
   }
 }
@@ -68,7 +70,7 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
         cacheData["checkTime"] = data["checkTime"];
 
         {
-          std::fstream stream(paths::CacheFilePath, std::ios::out);
+          std::fstream stream(fs::path(paths::CacheFilePath), std::ios::out);
           json jdata = cacheData;
           stream << jdata;
 
@@ -87,7 +89,7 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
 
           brls::Logger::info("Update check: sha {}, date {}", data["updateSha"], data["updateDate"]);
 
-          if (!cacheData.count("updateSha") || (!GenericToolbox::isDir(paths::IconCachePath) || GenericToolbox::isDirEmpty(paths::IconCachePath)) || data["updateSha"] != cacheData["updateSha"]) {
+          if (!cacheData.count("updateSha") || !fs::is_directory(paths::IconCachePath) || fs::is_empty(paths::IconCachePath) || data["updateSha"] != cacheData["updateSha"]) {
             brls::Logger::info("Update available: sha {}, date {}", data["updateSha"], data["updateDate"]);
             updateState = UpdateState::UPDATE;
           }
@@ -97,14 +99,14 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
         auto view = new DownloadView(
             DownloadPath,
             TempPath,
-            paths::BasePath,
+            std::string(paths::BasePath),
             this->settings.overwriteDuringExtract,
             [this](std::string res) {
               updateState = UpdateState::CHECK;
               cacheData = data;
 
               {
-                std::fstream stream(paths::CacheFilePath, std::ios::out);
+                std::fstream stream(std::string(paths::CacheFilePath), std::ios::out);
                 json jdata = cacheData;
                 stream << jdata;
 
@@ -123,9 +125,9 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
     });
       return true; });
 
-  if (GenericToolbox::isFile(paths::CacheFilePath))
+  if (fs::exists(paths::CacheFilePath))
   {
-    std::fstream stream(paths::CacheFilePath, std::ios::in);
+    std::fstream stream(fs::path(paths::CacheFilePath), std::ios::in);
     json j = json::parse(stream);
     cacheData = j;
 

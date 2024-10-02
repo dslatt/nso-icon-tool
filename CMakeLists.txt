@@ -19,7 +19,7 @@ include(${BOREALIS_LIBRARY}/cmake/toolchain.cmake)
 project(nso-icon-tool)
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "4")
-set(VERSION_ALTER "1")
+set(VERSION_ALTER "2")
 set(VERSION_BUILD "0")
 set(PROJECT_AUTHOR "dslatt")
 set(PROJECT_ICON ${CMAKE_CURRENT_SOURCE_DIR}/resources/img/dev.jpg)
@@ -63,7 +63,9 @@ endif ()
 
 # building target
 program_target(${PROJECT_NAME} "${MAIN_SRC}")
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
+
+# c++23 not supported by current toolchain cmake version; use compiler flags instead
+#set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
 
 
 # building release file
@@ -87,5 +89,5 @@ CheckGit("${GIT_WORKING_DIR}" changed)
 GitStateChangedAction()
 
 target_include_directories(${PROJECT_NAME} PRIVATE demo ${APP_PLATFORM_INCLUDE})
-target_compile_options(${PROJECT_NAME} PRIVATE -ffunction-sections -fdata-sections ${APP_PLATFORM_OPTION})
+target_compile_options(${PROJECT_NAME} PRIVATE -ffunction-sections -fdata-sections -std=c++2b ${APP_PLATFORM_OPTION})
 target_link_libraries(${PROJECT_NAME} PRIVATE borealis ${APP_PLATFORM_LIB})

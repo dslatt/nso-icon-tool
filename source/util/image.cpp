@@ -4,6 +4,7 @@
 #include <cstring>
 #include <algorithm>
 #include <fmt/format.h>
+#include <span>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
@@ -14,20 +15,17 @@
 
 #include <xxhash.h>
 
-Image::~Image()
-{
-  if (img)
-  {
-    free(img);
+Image::~Image() {
+  if (img) {
+    free(img); // free() and stbi_image_free() are the same. be sure to only use malloc() or stbi* managed memory for img
+    img = nullptr;
   }
-  img = nullptr;
 }
 
 Image::Image(const Image &other)
 {
-  unsigned char *data = (unsigned char*)malloc(other.size);
-  if (data)
-  {
+  auto* data = static_cast<unsigned char*>(malloc(other.size));
+  if (data && other.img) {
     std::memcpy(data, other.img, other.size);
     img = data;
     size = other.size;
@@ -39,8 +37,7 @@ Image::Image(const Image &other)
 }
 Image::Image(Image &&other) noexcept
 {
-  if (img)
-    free(img);
+  if (img) { free(img); }
   img = std::exchange(other.img, nullptr);
   size = std::exchange(other.size, 0);
   x = std::exchange(other.x, 0);
@@ -53,8 +50,7 @@ Image &Image::operator=(const Image &other)
 }
 Image &Image::operator=(Image &&other)
 {
-  if (img)
-    free(img);
+  if (img) { free(img); }
   img = std::exchange(other.img, nullptr);
   size = std::exchange(other.size, 0);
   x = std::exchange(other.x, 0);
@@ -69,12 +65,8 @@ Image::Image(int x, int y) : Image(nullptr, x, y, 4) { allocate(); }
 
 bool Image::allocate()
 {
-  if (img != nullptr)
-  {
-    free(img);
-  }
-
-  img = (unsigned char *)calloc(size / sizeof(char), sizeof(char));
+  if (img) { free(img); }
+  img = static_cast<unsigned char*>(calloc(size / sizeof(char), sizeof(char)));
 
   return img != 0;
 }
@@ -118,13 +110,15 @@ void Image::resize(int x, int y)
   }
 }
 
-bool Image::writeJpg(std::string path)
+bool Image::writeJpg(std::filesystem::path path)
 {
+  if (path.extension() != ".jpg") path.replace_extension(".jpg");
   return stbi_write_jpg(path.c_str(), x, y, 4, img, 90) != 0;
 }
 
-bool Image::writePng(std::string path)
+bool Image::writePng(std::filesystem::path path)
 {
+  if (path.extension() != ".png") path.replace_extension(".png");
   return stbi_write_png(path.c_str(), x, y, 4, img, 0) != 0;
 }
 
@@ -143,69 +137,72 @@ std::string Image::hash()
   return "";
 }
 
-#define RED(px) (uint8_t)(px)
-#define GREEN(px) (uint8_t)(px >> 8)
-#define BLUE(px) (uint8_t)(px >> 16)
-#define ALPHA(px) (uint8_t)(px >> 24)
-#define RGBA(r, g, b, a) ((r & 0xff) | ((g & 0xff) << 8) | ((b & 0xff) << 16) | ((a & 0xff) << 24))
-#define BLEND(a, b, alpha) (((a * alpha) + (b * (255 - alpha))) / 255)
+#pragma pack(push, 1)
+struct Pixel {
+  uint8_t r, g, b, a;
+
+  static Pixel blend(Pixel& a, Pixel& b) {
+
+    auto blender = [](uint8_t a, uint8_t b, uint8_t alpha) {
+      return static_cast<uint8_t>(((a * alpha) + (b * (255 - alpha))) / 255);
+    };
+
+    return Pixel {
+      .r = blender(a.r, b.r, a.a),
+      .g = blender(a.g, b.g, a.a),
+      .b = blender(a.b, b.b, a.a),
+      .a = 0xff
+    };
+  }
+};
+#pragma pack(pop)
 
 // assumes images same size, little endian, RGBA channels
 void Image::merge(Image &frame, Image &character, Image &background, Image &output)
 {
   auto total = frame.x * frame.y;
-  auto frameRef = (int *)frame.img;
-  auto characterRef = (int *)character.img;
-  auto backgroundRef = (int *)background.img;
-  auto outputRef = (int *)output.img;
+
+  std::span frameRef{reinterpret_cast<Pixel*>(frame.img), frame.size / sizeof(Pixel)};
+  std::span characterRef{reinterpret_cast<Pixel*>(character.img), character.size / sizeof(Pixel)};
+  std::span backgroundRef{reinterpret_cast<Pixel*>(background.img), background.size / sizeof(Pixel)};
+  std::span outputRef{reinterpret_cast<Pixel*>(output.img), output.size / sizeof(Pixel)};
 
   for (auto i = 0; i < total; i++)
   {
-    auto frameAlpha = ALPHA(*frameRef);
-    auto characterAlpha = ALPHA(*characterRef);
-    auto backgroundAlpha = ALPHA(*backgroundRef);
-
     // frame blocking
-    if (frameAlpha == 0xff)
+    if (frameRef[i].a == 0xff)
     {
-      *outputRef = *frameRef;
+      outputRef[i] = frameRef[i];
       // character blocking
     }
-    else if (frameAlpha == 0 && characterAlpha == 0xff)
+    else if (frameRef[i].a == 0 && characterRef[i].a == 0xff)
     {
-      *outputRef = *characterRef;
+      outputRef[i] = characterRef[i];
       // background only
     }
-    else if (frameAlpha == 0 && characterAlpha == 0)
+    else if (frameRef[i].a == 0 && characterRef[i].a == 0)
     {
-      *outputRef = *backgroundRef;
+      outputRef[i] = backgroundRef[i];
     }
     // blend
     else
     {
-      *outputRef = RGBA(BLEND(RED(*characterRef), RED(*backgroundRef), characterAlpha),
-                        BLEND(GREEN(*characterRef), GREEN(*backgroundRef), characterAlpha),
-                        BLEND(BLUE(*characterRef), BLUE(*backgroundRef), characterAlpha),
-                        0xff);
-
-      *outputRef = RGBA(BLEND(RED(*frameRef), RED(*outputRef), frameAlpha),
-                        BLEND(GREEN(*frameRef), GREEN(*outputRef), frameAlpha),
-                        BLEND(BLUE(*frameRef), BLUE(*outputRef), frameAlpha),
-                        0xff);
+      outputRef[i] = Pixel::blend(characterRef[i], backgroundRef[i]);
+      outputRef[i] = Pixel::blend(frameRef[i], outputRef[i]);
     }
-
-    frameRef++;
-    characterRef++;
-    outputRef++;
-    backgroundRef++;
   }
 }
 
 void Image::applyAlpha(Image& image, float alpha) {
   auto total = image.x * image.y;
-  auto ref = (int *)image.img;
+  auto ref = std::span(reinterpret_cast<Pixel*>(image.img), image.size / sizeof(Pixel));
 
   for (auto i = 0; i < total; i++) {
-    *ref++ = RGBA(RED(*ref), GREEN(*ref), BLUE(*ref), uint8_t(((float)ALPHA(*ref)) * alpha));
+    ref[i] = Pixel{
+      ref[i].r,
+      ref[i].g,
+      ref[i].b,
+      static_cast<uint8_t>(static_cast<float>(ref[i].a) * alpha)
+    };
   }
 }

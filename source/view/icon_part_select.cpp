@@ -2,8 +2,12 @@
 #include "view/icon_part_select.hpp"
 #include "view/icon_part_select_grid.hpp"
 #include <vector>
-#include "GenericToolbox.Switch.h"
 #include "util/paths.hpp"
+
+#include <filesystem>
+#include <ranges>
+
+namespace fs = std::filesystem;
 
 RecyclerCell::RecyclerCell()
 {
@@ -43,8 +47,6 @@ RecyclingGridItem *DataSource::cellForRow(RecyclingGrid *recycler, size_t index)
 
 void DataSource::onItemSelected(RecyclingGrid *recycler, size_t index)
 {
-  std::vector<std::string> res;
-
   brls::Logger::info("Selected {} ({})", parts[index].name, parts[index].icon);
 
   if (parts[index].name == "none")
@@ -57,18 +59,18 @@ void DataSource::onItemSelected(RecyclingGrid *recycler, size_t index)
     }
   }
 
-  auto path = GenericToolbox::joinPath(paths::IconCachePath, parts[index].name, subcategory);
-  auto files = GenericToolbox::lsFiles(path);
-  GenericToolbox::removeEntryIf(files, [](const std::string &entry)
-                                { return !GenericToolbox::endsWith(entry, ".png"); });
+  auto files = std::ranges::subrange(fs::directory_iterator(fs::path(paths::IconCachePath) / parts[index].name / subcategory), fs::directory_iterator{}) |
+    std::views::filter([](const fs::directory_entry &entry) { return entry.is_regular_file() && entry.path().extension() == ".png"; }) |
+    std::views::transform([](const fs::directory_entry &entry) { return entry.path().string(); }) |
+    std::ranges::to<std::vector<std::string>>();
+
   for (auto &file : files)
   {
-    res.push_back(GenericToolbox::joinPath(path, file));
-    brls::Logger::debug("{}", GenericToolbox::joinPath(path, file));
+    brls::Logger::debug("{}", file);
   }
-  brls::Logger::debug("total {}", res.size());
+  brls::Logger::debug("total {}", files.size());
 
-  recycler->present(new grid::IconPartSelectGrid(res, convertName(parts[index].name), state, [this](std::string icon)
+  recycler->present(new grid::IconPartSelectGrid(files, convertName(parts[index].name), state, [this](std::string icon)
                                                  {
     onSelected(icon);
     if (parent)

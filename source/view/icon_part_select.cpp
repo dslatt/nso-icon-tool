@@ -2,7 +2,6 @@
 #include "view/icon_part_select.hpp"
 #include "view/icon_part_select_grid.hpp"
 #include <vector>
-//#include "GenericToolbox.Switch.h"
 #include "util/paths.hpp"
 
 #include <filesystem>

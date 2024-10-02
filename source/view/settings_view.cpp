@@ -5,7 +5,6 @@
 
 #include "extern/json.hpp"
 #include "util/download.hpp"
-//#include <GenericToolbox.h>
 #include <filesystem>
 #include <fstream>
 #include "util/paths.hpp"
@@ -15,7 +14,7 @@ using json = nlohmann::json;
 const std::string ApiPath = "http://api.github.com/repos/henry-debruin/nso-icons/branches/main";
 const std::string DownloadPath = "https://github.com/henry-debruin/nso-icons/archive/refs/heads/main.zip";
 
-const std::string TempPath = std::string(paths::BasePath) + "/icon_archive_temp.zip";
+const std::string TempPath = std::string(paths::BasePath) + "icon_archive_temp.zip";
 
 using namespace brls::literals; // for _i18n
 namespace fs = std::filesystem;

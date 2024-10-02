@@ -10,7 +10,6 @@
 #include "util/download.hpp"
 
 #define __SWITCH__
-//#include "GenericToolbox.Switch.h"
 #include "extern/json.hpp"
 
 #include <filesystem>

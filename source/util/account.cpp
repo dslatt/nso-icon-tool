@@ -111,7 +111,7 @@ namespace account
                               });
     }
 
-    fs::remove_all(path);
+    fs::remove(path);
     return true;
   }
 }

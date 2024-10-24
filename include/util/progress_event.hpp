@@ -1,18 +1,20 @@
 #pragma once
 
+#include <atomic>
+
 class ProgressEvent
 {
 private:
   ProgressEvent() {}
-  int _current = 0;
-  int _max = 60;
-  double _now = 0;
-  double _total = 0;
-  double _speed = 0;
-  long _status_code = 0;
-  bool _interupt = false;
-  double _timeStep = 0;
-  std::string _msg = "";
+  std::atomic_int _current = 0;
+  std::atomic_int _max = 60;
+  std::atomic<double> _now = 0;
+  std::atomic<double> _total = 0;
+  std::atomic<double> _speed = 0;
+  std::atomic<long> _status_code = 0;
+  std::atomic<bool> _interupt = false;
+  std::atomic<double> _timeStep = 0;
+  //std::string _msg = "";
 
 public:
   ProgressEvent(const ProgressEvent &) = delete;
@@ -36,11 +38,11 @@ public:
     _status_code = 0;
     _interupt = false;
     _timeStep = 0;
-    _msg = "";
+    //_msg = "";
   }
 
-  inline void setMsg(std::string msg) { _msg = std::move(msg); }
-  inline const std::string &getMsg() { return _msg; }
+  //inline void setMsg(std::string msg) { _msg = std::move(msg); }
+  //inline const std::string &getMsg() { return _msg; }
   inline void setTotalSteps(int steps) { _max = steps; }
   inline void setTotalCount(double total) { _total = total; }
   inline void setSpeed(double speed) { _speed = speed; }

@@ -49,10 +49,10 @@ if (PLATFORM_SWITCH)
         glfw3 EGL glapi drm_nouveau
         # base lib
         nx m
+        # extract
+        archive
         # curl
         curl z bz2 zstd lzma lz4
-        # extract
-        minizip
         # hash
         xxhash
     )

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <borealis.hpp>
+#include <atomic>
 
 typedef brls::Event<std::string> DownloadDoneEvent;
 
@@ -31,14 +32,14 @@ private:
   void downloadFile();
   void updateProgress();
 
-  std::thread updateThread;
-  std::thread downloadThread;
+  std::jthread updateThread;
+  std::jthread downloadThread;
   std::mutex threadMutex;
   std::condition_variable threadCondition;
 
   DownloadDoneEvent::Callback cb;
 
-  bool downloadFinished = false;
-  bool extractFinished = false;
-  bool overwriteExisting = false;
+  std::atomic_flag downloadFinished;
+  std::atomic_flag extractFinished;
+  bool overwriteExisting;
 };

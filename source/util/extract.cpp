@@ -1,126 +1,169 @@
 #include "util/extract.hpp"
 
-#include <dirent.h>
-#include <minizip/unzip.h>
-
 #include <string>
-#include <vector>
 #include <borealis.hpp>
 #include <strings.h>
 #include <filesystem>
+#include <fstream>
+#include <archive.h>
+#include <archive_entry.h>
 
 #include <switch.h>
+#include <chrono>
 
 #include "util/progress_event.hpp"
 
 using namespace brls::literals; // for _i18n
 namespace fs = std::filesystem;
 
-constexpr size_t WRITE_BUFFER_SIZE = 0x10000;
+constexpr size_t WRITE_BUFFER_SIZE = 0x20000;
 
 namespace extract
 {
-  namespace
+  std::tuple<int64_t, int64_t> getFileStats(const std::string &archivePath)
   {
-    bool caselessCompare(const std::string &a, const std::string &b)
-    {
-      return strcasecmp(a.c_str(), b.c_str()) == 0;
-    }
+    std::tuple<int64_t, int64_t> stats{0, 0};
+    struct archive* archive;
+    struct archive_entry* entry;
 
-    s64 getUncompressedSize(const std::string &archivePath)
-    {
-      s64 size = 0;
-      unzFile zfile = unzOpen(archivePath.c_str());
-      unz_global_info gi;
-      unzGetGlobalInfo(zfile, &gi);
-      for (uLong i = 0; i < gi.number_entry; ++i)
-      {
-        unz_file_info fi;
-        unzOpenCurrentFile(zfile);
-        unzGetCurrentFileInfo(zfile, &fi, NULL, 0, NULL, 0, NULL, 0);
-        size += fi.uncompressed_size;
-        unzCloseCurrentFile(zfile);
-        unzGoToNextFile(zfile);
-      }
-      unzClose(zfile);
-      return size; // in B
-    }
+    archive = archive_read_new();
+    archive_read_support_format_all(archive);
+    archive_read_support_filter_all(archive);
 
-    void ensureAvailableStorage(const std::string &archivePath)
-    {
-      s64 uncompressedSize = getUncompressedSize(archivePath);
-      s64 freeStorage;
-
-      if (R_SUCCEEDED(nsGetFreeSpaceSize(NcmStorageId_SdCard, &freeStorage)))
-      {
-        brls::Logger::info("Uncompressed size of archive {}: {}. Available: {}", archivePath, uncompressedSize, freeStorage);
-        if (uncompressedSize * 1.1 > freeStorage)
-        {
-          brls::Application::crash("app/errors/insufficient_storage"_i18n);
-          std::this_thread::sleep_for(std::chrono::microseconds(2000000));
-          brls::Application::quit();
+    if(archive_read_open_filename(archive, archivePath.c_str(), 10240) == ARCHIVE_OK) {
+        while(archive_read_next_header(archive, &entry) == ARCHIVE_OK) {
+            std::get<0>(stats) += 1;
+            std::get<1>(stats) += archive_entry_size(entry);
         }
-      }
+        archive_read_close(archive);
     }
 
-    void extractEntry(std::string filename, unzFile &zfile, bool forceCreateTree = false)
+    archive_read_free(archive);
+    return stats;
+  }
+
+  void ensureAvailableStorage(size_t uncompressedSize)
+  {
+    s64 freeStorage;
+
+    if (R_SUCCEEDED(nsGetFreeSpaceSize(NcmStorageId_SdCard, &freeStorage)))
     {
-      if (filename.back() == '/')
+      brls::Logger::info("Uncompressed size of archive: {}. Available: {}", uncompressedSize, freeStorage);
+      if (uncompressedSize * 1.1 > freeStorage)
       {
-        fs::create_directories(filename);
-        return;
+        brls::Application::crash("app/errors/insufficient_storage"_i18n);
+        std::this_thread::sleep_for(std::chrono::microseconds(2000000));
+        brls::Application::quit();
       }
-      if (forceCreateTree)
-      {
-        fs::create_directories(filename);
-      }
-      void *buf = malloc(WRITE_BUFFER_SIZE);
-      FILE *outfile;
-      outfile = fopen(filename.c_str(), "wb");
-      for (int j = unzReadCurrentFile(zfile, buf, WRITE_BUFFER_SIZE); j > 0; j = unzReadCurrentFile(zfile, buf, WRITE_BUFFER_SIZE))
-      {
-        fwrite(buf, 1, j, outfile);
-      }
-      free(buf);
-      fclose(outfile);
     }
   }
 
-  void extract(const std::string &archivePath, const std::string &workingPath, bool overwriteExisting, std::function<void()> func)
-  {
-    ensureAvailableStorage(archivePath);
+  void extract(const std::string &archivePath, const std::string &workingPath, bool overwriteExisting) {
+    auto start = std::chrono::high_resolution_clock::now();
 
-    unzFile zfile = unzOpen(archivePath.c_str());
-    unz_global_info gi;
-    unzGetGlobalInfo(zfile, &gi);
+    auto [totalFiles, totalSize] = getFileStats(archivePath);
+    ensureAvailableStorage(totalSize);
 
-    ProgressEvent::instance().setTotalSteps(gi.number_entry);
+    brls::sync([totalFiles, totalSize]() {
+      brls::Logger::info("Extracting {} {} entries", totalFiles, totalSize);
+    });
+
+    ProgressEvent::instance().setTotalSteps(totalFiles);
     ProgressEvent::instance().setStep(0);
 
-    for (uLong i = 0; i < gi.number_entry; ++i)
-    {
-      char szFilename[0x301] = "";
-      unzOpenCurrentFile(zfile);
-      unzGetCurrentFileInfo(zfile, NULL, szFilename, sizeof(szFilename), NULL, 0, NULL, 0);
-      std::string filename = workingPath + szFilename;
+    struct archive *a;
+    struct archive_entry *entry;
+    int err = 0, i = 0, count = 0;
 
-      if (ProgressEvent::instance().getInterupt())
-      {
-        unzCloseCurrentFile(zfile);
+    //char buf[WRITE_BUFFER_SIZE];
+    //auto buf = std::make_unique<char[]>(WRITE_BUFFER_SIZE);
+
+    a = archive_read_new();
+    archive_read_support_format_all(a);
+    archive_read_support_filter_all(a);
+
+    if ((err = archive_read_open_filename(a, archivePath.c_str(), 10240))) {
+      brls::sync([err = std::string(archive_error_string(a))]() {
+        brls::Logger::error("Error opening archive: {}", err);
+      });
+      archive_read_free(a);
+      return;
+    }
+
+    for (;;) {
+      if (ProgressEvent::instance().getInterupt()) {
+        ProgressEvent::instance().setStep(ProgressEvent::instance().getMax());
         break;
       }
 
-      if (overwriteExisting || !fs::exists(filename))
-      {
-        ProgressEvent::instance().setMsg(filename);
-        extractEntry(filename, zfile);
+      err = archive_read_next_header(a, &entry);
+      if (err == ARCHIVE_EOF) {
+        ProgressEvent::instance().setStep(ProgressEvent::instance().getMax());
+        break;
+      }
+      if (err < ARCHIVE_OK)
+        brls::sync([archivePath, err = std::string(archive_error_string(a))]() {
+          brls::Logger::error("Error reading archive entry: {}", err);
+        });
+      if (err < ARCHIVE_WARN) {
+        break;
       }
 
-      ProgressEvent::instance().setStep(i);
-      unzCloseCurrentFile(zfile);
-      unzGoToNextFile(zfile);
+      auto filepath = fs::path(workingPath) / archive_entry_pathname(entry);
+
+      if (archive_entry_filetype(entry) == AE_IFDIR) {
+        fs::create_directories(filepath);
+        ProgressEvent::instance().setStep(++i);
+        continue;
+      }
+
+      if (fs::exists(filepath) && !overwriteExisting) {
+        ProgressEvent::instance().setStep(++i);
+        continue;
+      }
+
+      std::ofstream outfile(filepath.string(), std::ios::binary | std::ios::trunc);
+      if (!outfile.is_open()) {
+        brls::sync([path = filepath.string()]() {
+          brls::Logger::error("Error opening write file for archive entry: {}", path);
+        });
+        break;
+      }
+
+      const void* buff = nullptr;
+      size_t size = 0;
+      int64_t offset = 0;
+      int res = -1;
+      while ((res = archive_read_data_block(a, &buff, &size, &offset)) == ARCHIVE_OK) {
+        try {
+          outfile.write(static_cast<const char*>(buff), size);
+        } catch(const std::exception& e) {
+          res = ARCHIVE_FATAL;
+          break;
+        }
+      }
+
+      if (res != ARCHIVE_EOF) {
+        brls::sync([res = std::string(archive_error_string(a))]() {
+          brls::Logger::error("Error writing out archive entry: {}", res);
+        });
+        outfile.close();
+        fs::remove(filepath);
+        break;
+      }
+
+      count++;
+      ProgressEvent::instance().setStep(++i);
     }
-    unzClose(zfile);
-    ProgressEvent::instance().setStep(ProgressEvent::instance().getMax());
+
+    archive_read_close(a);
+    archive_read_free(a);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+
+    brls::sync([elapsed, totalFiles]() {
+      brls::Logger::info("Total extraction time: {}s for {} files", elapsed, count);
+    });
   }
 }

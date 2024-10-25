@@ -14,7 +14,6 @@ private:
   std::atomic<long> _status_code = 0;
   std::atomic<bool> _interupt = false;
   std::atomic<double> _timeStep = 0;
-  //std::string _msg = "";
 
 public:
   ProgressEvent(const ProgressEvent &) = delete;
@@ -38,11 +37,8 @@ public:
     _status_code = 0;
     _interupt = false;
     _timeStep = 0;
-    //_msg = "";
   }
 
-  //inline void setMsg(std::string msg) { _msg = std::move(msg); }
-  //inline const std::string &getMsg() { return _msg; }
   inline void setTotalSteps(int steps) { _max = steps; }
   inline void setTotalCount(double total) { _total = total; }
   inline void setSpeed(double speed) { _speed = speed; }

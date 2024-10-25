@@ -65,7 +65,7 @@ void DownloadView::updateProgress()
   // DOWNLOAD
   {
     ASYNC_RETAIN
-    brls::async([ASYNC_TOKEN]()
+    brls::sync([ASYNC_TOKEN]()
                {
             ASYNC_RELEASE
             download_status->setText("app/download/downloading"_i18n);
@@ -80,7 +80,7 @@ void DownloadView::updateProgress()
     while (!downloadFinished.test())
     {
       ASYNC_RETAIN
-      brls::async([ASYNC_TOKEN]()
+      brls::sync([ASYNC_TOKEN]()
                  {
                 ASYNC_RELEASE
                 this->status_current->setText(fmt::format("{:.0f}MB ({:.1f}MB/s)",

@@ -42,8 +42,8 @@ void DownloadView::downloadFile()
 
   brls::Logger::info("Download started: {} to {}", url, downloadPath);
   ProgressEvent::instance().reset();
-  if (!std::filesystem::exists(downloadPath))
-    download::downloadFile(url, downloadPath);
+  std::filesystem::remove(downloadPath);
+  download::downloadFile(url, downloadPath);
   brls::Logger::info("Download complete");
   downloadFinished.test_and_set();
 
@@ -112,7 +112,9 @@ void DownloadView::updateProgress()
       brls::sync([ASYNC_TOKEN]()
                  {
                 ASYNC_RELEASE
-                this->status_percent->setText(fmt::format("{}%", (int)((ProgressEvent::instance().getStep() * 100 / ProgressEvent::instance().getMax())))); });
+
+                this->status_current->setText(fmt::format("{}/{}", ProgressEvent::instance().getStep(), ProgressEvent::instance().getMax()));
+                this->status_percent->setText(fmt::format("({}%)", (int)((ProgressEvent::instance().getStep() * 100 / ProgressEvent::instance().getMax())))); });
       std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     {
@@ -129,7 +131,7 @@ void DownloadView::updateProgress()
   }
   // CLEANUP
   {
-    //std::filesystem::remove(downloadPath);
+    std::filesystem::remove(downloadPath);
   }
 
   // Add a button to go back after the end of the download

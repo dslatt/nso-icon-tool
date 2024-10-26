@@ -5,12 +5,18 @@
 
 struct Image
 {
-  unsigned char* img = nullptr;
+  struct HandleDeleter
+  {
+    void operator()(unsigned char *p) const { if (p) std::free(p); }
+  };
+
+  using Handle = std::unique_ptr<unsigned char, HandleDeleter>;
+  Handle data;
   int size = 0;   // raw size in bytes
   int pixels = 0; // pixel count
   int x = 0, y = 0, n = 0;
 
-  ~Image();
+  ~Image() = default;
 
   Image(const Image &other);
   Image(Image &&other) noexcept;

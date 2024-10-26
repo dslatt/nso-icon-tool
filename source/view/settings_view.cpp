@@ -106,9 +106,9 @@ SettingsView::SettingsView(SettingsData &settings) : settings(settings)
               cacheData = data;
 
               {
-                //std::fstream stream(std::string(paths::CacheFilePath), std::ios::out);
-                //json jdata = cacheData;
-                //stream << jdata;
+                std::fstream stream(std::string(paths::CacheFilePath), std::ios::out);
+                json jdata = cacheData;
+                stream << jdata;
 
                 brls::Logger::info("Cache file saved {}", paths::CacheFilePath);
               }

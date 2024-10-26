@@ -15,28 +15,26 @@
 
 using namespace brls::literals; // for _i18n
 namespace fs = std::filesystem;
+using ArchivePtr = std::unique_ptr<struct archive, decltype(&archive_read_free)>;
 
 namespace extract
 {
   std::tuple<int64_t, int64_t> getFileStats(const std::string &archivePath)
   {
     std::tuple<int64_t, int64_t> stats{0, 0};
-    struct archive* archive;
+    ArchivePtr archive(archive_read_new(), archive_read_free);
     struct archive_entry* entry;
 
-    archive = archive_read_new();
-    archive_read_support_format_all(archive);
-    archive_read_support_filter_all(archive);
+    archive_read_support_format_all(archive.get());
+    archive_read_support_filter_all(archive.get());
 
-    if(archive_read_open_filename(archive, archivePath.c_str(), 10240) == ARCHIVE_OK) {
-        while(archive_read_next_header(archive, &entry) == ARCHIVE_OK) {
+    if(archive_read_open_filename(archive.get(), archivePath.c_str(), 10240) == ARCHIVE_OK) {
+        while(archive_read_next_header(archive.get(), &entry) == ARCHIVE_OK) {
             std::get<0>(stats) += 1;
             std::get<1>(stats) += archive_entry_size(entry);
         }
-        archive_read_close(archive);
     }
 
-    archive_read_free(archive);
     return stats;
   }
 
@@ -58,26 +56,29 @@ namespace extract
 
   void extract(const std::string &archivePath, const std::string &workingPath, bool overwriteExisting) {
     auto start = std::chrono::high_resolution_clock::now();
+    int count = 0;
+
+    try {
 
     auto [totalFiles, totalSize] = getFileStats(archivePath);
     ensureAvailableStorage(totalSize);
 
     brls::sync([totalFiles, totalSize]() {
-      brls::Logger::info("Extracting {} {} entries", totalFiles, totalSize);
+      brls::Logger::info("Extracting {} entries of size {} bytes", totalFiles, totalSize);
     });
 
     ProgressEvent::instance().setTotalSteps(totalFiles);
     ProgressEvent::instance().setStep(0);
 
-    std::unique_ptr<struct archive, decltype(&archive_read_free)> a(archive_read_new(), archive_read_free);
+    ArchivePtr archive(archive_read_new(), archive_read_free);
     struct archive_entry *entry;
-    int err = 0, i = 0, count = 0;
+    int err = 0, i = 0;
 
-    archive_read_support_format_all(a.get());
-    archive_read_support_filter_all(a.get());
+    archive_read_support_format_all(archive.get());
+    archive_read_support_filter_all(archive.get());
 
-    if ((err = archive_read_open_filename(a.get(), archivePath.c_str(), 10240))) {
-      brls::sync([err = std::string(archive_error_string(a.get()))]() {
+    if ((err = archive_read_open_filename(archive.get(), archivePath.c_str(), 10240))) {
+      brls::sync([err = std::string(archive_error_string(archive.get()))]() {
         brls::Logger::error("Error opening archive: {}", err);
       });
       return;
@@ -89,13 +90,13 @@ namespace extract
         break;
       }
 
-      err = archive_read_next_header(a.get(), &entry);
+      err = archive_read_next_header(archive.get(), &entry);
       if (err == ARCHIVE_EOF) {
         ProgressEvent::instance().setStep(ProgressEvent::instance().getMax());
         break;
       }
       if (err < ARCHIVE_OK)
-        brls::sync([archivePath, err = std::string(archive_error_string(a.get()))]() {
+        brls::sync([archivePath, err = std::string(archive_error_string(archive.get()))]() {
           brls::Logger::error("Error reading archive entry: {}", err);
         });
       if (err < ARCHIVE_WARN) {
@@ -127,19 +128,17 @@ namespace extract
       size_t size = 0;
       int64_t offset = 0;
       int res = -1;
-      while ((res = archive_read_data_block(a.get(), &buff, &size, &offset)) == ARCHIVE_OK) {
+      while ((res = archive_read_data_block(archive.get(), &buff, &size, &offset)) == ARCHIVE_OK) {
         try {
           outfile.write(static_cast<const char*>(buff), size);
         } catch(const std::exception& e) {
           res = ARCHIVE_FATAL;
-          outfile.close();
-          fs::remove(filepath);
           break;
         }
       }
 
       if (res != ARCHIVE_EOF) {
-        brls::sync([res = std::string(archive_error_string(a.get()))]() {
+        brls::sync([res = std::string(archive_error_string(archive.get()))]() {
           brls::Logger::error("Error writing out archive entry: {}", res);
         });
         outfile.close();
@@ -149,6 +148,12 @@ namespace extract
 
       count++;
       ProgressEvent::instance().setStep(++i);
+    }
+
+    } catch(const std::exception& e) {
+      brls::sync([e = std::string(e.what())]() {
+        brls::Logger::error("Unexpected error extracting archive: {}", e);
+      });
     }
 
     auto end = std::chrono::high_resolution_clock::now();

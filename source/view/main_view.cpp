@@ -101,7 +101,7 @@ MainView::MainView()
         this->present(static_cast<brls::View*>(new IconPartSelect(files.value(), "frames", imageState, [this](std::string path) {
           brls::Logger::info("Recieved {} from selection.", path);
           imageState.updateFrame(path);
-          image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
+          image->setImageFromMemRGBA(imageState.working.data.get(), imageState.working.x, imageState.working.y);
         }, [](std::string path, ImageState& state){
           state.updateFrame(path);
         })));
@@ -121,7 +121,7 @@ MainView::MainView()
         this->present(static_cast<brls::View*>(new IconPartSelect(files.value(), "characters", imageState, [this](std::string path) {
           brls::Logger::info("Recieved {} from selection.", path);
           imageState.updateCharacter(path);
-          image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
+          image->setImageFromMemRGBA(imageState.working.data.get(), imageState.working.x, imageState.working.y);
         }, [](std::string path, ImageState& state){
           state.updateCharacter(path);
         })));
@@ -141,7 +141,7 @@ MainView::MainView()
         this->present(static_cast<brls::View*>(new IconPartSelect(files.value(), "backgrounds", imageState, [this](std::string path) {
           brls::Logger::info("Recieved {} from selection.", path);
           imageState.updateBackground(path);
-          image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
+          image->setImageFromMemRGBA(imageState.working.data.get(), imageState.working.x, imageState.working.y);
         }, [](std::string path, ImageState& state){
           state.updateBackground(path);
         })));
@@ -156,7 +156,7 @@ MainView::MainView()
       auto res = account::setUserIcon(user, imageState.working);
       brls::Logger::info("Icon set for user {}: {}", user.base.nickname, res);
       if (res) {
-        currentImage->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
+        currentImage->setImageFromMemRGBA(imageState.working.data.get(), imageState.working.x, imageState.working.y);
 
         // save to collection; hash beforehand to avoid duplicate copies
         auto path = fs::path(paths::CollectionPath) / (imageState.working.hash() + ".png");
@@ -178,7 +178,7 @@ MainView::MainView()
           this->present(static_cast<brls::View*>(new grid::IconPartSelectGrid(files.value(), "app/main/available_images"_i18n, tempState, [this](std::string path) {
               brls::Logger::info("Recieved {} from selection.", path);
               imageState.updateWorking(path);
-              image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
+              image->setImageFromMemRGBA(imageState.working.data.get(), imageState.working.x, imageState.working.y);
             }, [](std::string path, ImageState &state){
               state.updateWorking(path);
             })));
@@ -200,7 +200,7 @@ MainView::MainView()
           this->present(static_cast<brls::View*>(new collection::CollectionGrid(files.value(), "app/main/available_images"_i18n, tempState, [this](std::string path) {
               brls::Logger::info("Recieved {} from selection.", path);
               imageState.updateWorking(path);
-              image->setImageFromMemRGBA(imageState.working.img, imageState.working.x, imageState.working.y);
+              image->setImageFromMemRGBA(imageState.working.data.get(), imageState.working.x, imageState.working.y);
             }, [](std::string path, ImageState &state){
               state.updateWorking(path);
             })));
@@ -242,7 +242,7 @@ void MainView::handleUserSelection()
     auto image = account::getProfileImage(user);
     brls::Logger::info("Loaded User is {}", user.base.nickname);
     currentUser->setText(user.base.nickname);
-    currentImage->setImageFromMemRGBA(image.img, image.x, image.y);
+    currentImage->setImageFromMemRGBA(image.data.get(), image.x, image.y);
   }
 }
 

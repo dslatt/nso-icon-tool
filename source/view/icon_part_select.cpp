@@ -126,7 +126,7 @@ DataSource::DataSource(std::vector<CategoryPart> parts, std::function<void(std::
 IconPartSelect::IconPartSelect(const std::vector<CategoryPart> &files, std::string subcategory, const ImageState &state, std::function<void(std::string)> onSelected, std::function<void(std::string, ImageState &state)> onFocused) : workingState(state)
 {
   this->inflateFromXMLRes("xml/views/icon_part_select.xml");
-  image->setImageFromMemRGBA(workingState.working.img, workingState.working.x, workingState.working.y);
+  image->setImageFromMemRGBA(workingState.working.data.get(), workingState.working.x, workingState.working.y);
   recycler->registerCell("Cell", []()
                          { return RecyclerCell::create(); });
   recycler->setDataSource(new DataSource(files, onSelected, onFocused, this, subcategory, workingState));

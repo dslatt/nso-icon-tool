@@ -27,8 +27,8 @@ DownloadView::DownloadView(std::string url, std::string downloadPath, std::strin
   this->setHideHighlightBackground(true);
   this->setHideHighlightBorder(true);
 
-  downloadThread = std::thread(&DownloadView::downloadFile, this);
-  updateThread = std::thread(&DownloadView::updateProgress, this);
+  downloadThread = std::jthread(&DownloadView::downloadFile, this);
+  updateThread = std::jthread(&DownloadView::updateProgress, this);
 
   brls::sync([this]()
              { getAppletFrame()->setActionAvailable(brls::ControllerButton::BUTTON_B, false); });
@@ -42,16 +42,17 @@ void DownloadView::downloadFile()
 
   brls::Logger::info("Download started: {} to {}", url, downloadPath);
   ProgressEvent::instance().reset();
+  std::filesystem::remove(downloadPath);
   download::downloadFile(url, downloadPath);
   brls::Logger::info("Download complete");
-  this->downloadFinished = true;
+  downloadFinished.test_and_set();
 
   ProgressEvent::instance().reset();
 
   brls::Logger::info("Extract started: {} to {}", downloadPath, extractPath);
   extract::extract(downloadPath, extractPath, overwriteExisting);
   brls::Logger::info("Extract complete");
-  this->extractFinished = true;
+  extractFinished.test_and_set();
 
   cb("");
 }
@@ -72,11 +73,11 @@ void DownloadView::updateProgress()
 
     while (ProgressEvent::instance().getTotal() == 0)
     {
-      if (downloadFinished)
+      if (downloadFinished.test())
         break;
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
-    while (!downloadFinished)
+    while (!downloadFinished.test())
     {
       ASYNC_RETAIN
       brls::sync([ASYNC_TOKEN]()
@@ -85,7 +86,7 @@ void DownloadView::updateProgress()
                 this->status_current->setText(fmt::format("{:.0f}MB ({:.1f}MB/s)",
                   ProgressEvent::instance().getNow() / 1000000.0,
                   ProgressEvent::instance().getSpeed() / 1000000.0)); });
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
   }
   // EXTRACT
@@ -95,23 +96,26 @@ void DownloadView::updateProgress()
                {
             ASYNC_RELEASE
             download_status->setText("app/download/downloaded"_i18n);
-            extract_status->setText("app/download/extracting"_i18n); });
+            extract_status->setText("app/download/extracting"_i18n);
+            status_current->setText("");
+            });
     while (ProgressEvent::instance().getMax() == 0)
     {
-      if (extractFinished)
+      if (extractFinished.test())
         break;
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 
-    while (ProgressEvent::instance().getStep() < ProgressEvent::instance().getMax() && !extractFinished)
+    while (ProgressEvent::instance().getStep() < ProgressEvent::instance().getMax() && !extractFinished.test())
     {
       ASYNC_RETAIN
       brls::sync([ASYNC_TOKEN]()
                  {
                 ASYNC_RELEASE
-                this->status_current->setText(ProgressEvent::instance().getMsg());
-                this->status_percent->setText(fmt::format("{}%", (int)((ProgressEvent::instance().getStep() * 100 / ProgressEvent::instance().getMax())))); });
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+                this->status_current->setText(fmt::format("{}/{}", ProgressEvent::instance().getStep(), ProgressEvent::instance().getMax()));
+                this->status_percent->setText(fmt::format("({}%)", (int)((ProgressEvent::instance().getStep() * 100 / ProgressEvent::instance().getMax())))); });
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     {
       ASYNC_RETAIN

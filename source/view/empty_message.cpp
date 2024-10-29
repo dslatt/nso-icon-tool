@@ -1,4 +1,3 @@
-
 #include "view/empty_message.hpp"
 
 EmptyMessage::EmptyMessage(std::string message)

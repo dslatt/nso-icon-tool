@@ -1,14 +1,14 @@
 #pragma once
 
-#include <borealis.hpp>
 #include <atomic>
+#include <borealis.hpp>
 
 typedef brls::Event<std::string> DownloadDoneEvent;
 
-class DownloadView : public brls::Box
-{
+class DownloadView : public brls::Box {
 public:
-  DownloadView(std::string url, std::string downloadPath, std::string extractPath, bool overwriteExisting, DownloadDoneEvent::Callback cb);
+  DownloadView(std::string url, std::string downloadPath, std::string extractPath, bool overwriteExisting,
+      DownloadDoneEvent::Callback cb);
   ~DownloadView()
   {
     if (downloadThread.joinable())

@@ -28,6 +28,7 @@
 
 #include "activity/main_activity.hpp"
 #include "util/paths.hpp"
+#include "version.h"
 #include "view/main_view.hpp"
 #include "view/recycling_grid.hpp"
 
@@ -63,6 +64,10 @@ int main(int argc, char* argv[])
     return std::fclose(file);
   });
   brls::Logger::setLogOutput(logHandle.get());
+
+  brls::Logger::info("nso-icon-tool {}", version::AppVersion);
+  brls::Logger::info(
+      "commit: {} ({} - {})", version::GitHeadSHA1, version::GitCommitDate, version::GitDirty ? "dirty" : "clean");
 
   // Init the app and i18n
   if (!brls::Application::init()) {

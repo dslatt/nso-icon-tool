@@ -95,7 +95,7 @@ CheckGit("${GIT_WORKING_DIR}" changed)
 GitStateChangedAction()
 
 # warnings
-list(APPEND APP_PLATFORM_OPTION -Wall -Wextra -Wno-unused-parameter)
+# list(APPEND APP_PLATFORM_OPTION -Wall -Wextra -Wno-unused-parameter)
 
 target_compile_options(${PROJECT_NAME} PRIVATE -ffunction-sections -fdata-sections -std=c++2b  ${APP_PLATFORM_OPTION})
 target_link_libraries(${PROJECT_NAME} PRIVATE borealis ${APP_PLATFORM_LIB})

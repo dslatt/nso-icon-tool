@@ -34,15 +34,14 @@
 using namespace brls::literals; // for _i18n
 namespace fs = std::filesystem;
 
+using FileHandle = std::unique_ptr<std::FILE, decltype(&std::fclose)>;
+
 int main(int argc, char* argv[])
 {
   // We recommend to use INFO for real apps
   for (int i = 1; i < argc; i++) {
     if (std::strcmp(argv[i], "-d") == 0) { // Set log level
       brls::Logger::setLogLevel(brls::LogLevel::LOG_DEBUG);
-    } else if (std::strcmp(argv[i], "-o") == 0) {
-      const char* path = (i + 1 < argc) ? argv[++i] : "borealis.log";
-      brls::Logger::setLogOutput(std::fopen(path, "w+"));
     } else if (std::strcmp(argv[i], "-v") == 0) {
       brls::Application::enableDebuggingView(true);
     }
@@ -52,13 +51,18 @@ int main(int argc, char* argv[])
     // create expected directories; these need to exist for the app to work
     fs::create_directories(paths::CollectionPath);
   } catch (const std::exception& e) {
-    brls::Logger::error("Error creating expected directories; Cant continue: {}", e.what());
+    // brls::Logger::error("Error creating expected directories; Cant continue: {}", e.what());
     return EXIT_FAILURE;
   }
 
-#ifdef NDEBUG
-  brls::Logger::setLogOutput(fopen(std::string(paths::LogFilePath).c_str(), "w"));
-#endif
+  // create/assign log file
+  auto logHandle = FileHandle(std::fopen(std::string(paths::LogFilePath).c_str(), "w"), [](std::FILE* file) {
+    if (file == nullptr)
+      return EXIT_FAILURE;
+    std::fflush(file);
+    return std::fclose(file);
+  });
+  brls::Logger::setLogOutput(logHandle.get());
 
   // Init the app and i18n
   if (!brls::Application::init()) {

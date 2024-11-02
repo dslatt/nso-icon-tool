@@ -2,26 +2,25 @@
 
 #include <atomic>
 
-class ProgressEvent
-{
+class ProgressEvent {
 private:
-  ProgressEvent() {}
-  std::atomic_int _current = 0;
-  std::atomic_int _max = 60;
-  std::atomic<double> _now = 0;
-  std::atomic<double> _total = 0;
-  std::atomic<double> _speed = 0;
+  ProgressEvent() { }
+  std::atomic_int _current       = 0;
+  std::atomic_int _max           = 60;
+  std::atomic<double> _now       = 0;
+  std::atomic<double> _total     = 0;
+  std::atomic<double> _speed     = 0;
   std::atomic<long> _status_code = 0;
-  std::atomic<bool> _interupt = false;
-  std::atomic<double> _timeStep = 0;
+  std::atomic<bool> _interupt    = false;
+  std::atomic<double> _timeStep  = 0;
 
 public:
-  ProgressEvent(const ProgressEvent &) = delete;
-  ProgressEvent &operator=(const ProgressEvent &) = delete;
-  ProgressEvent(ProgressEvent &&) = delete;
-  ProgressEvent &operator=(ProgressEvent &&) = delete;
+  ProgressEvent(const ProgressEvent&) = delete;
+  ProgressEvent& operator=(const ProgressEvent&) = delete;
+  ProgressEvent(ProgressEvent&&)                 = delete;
+  ProgressEvent& operator=(ProgressEvent&&) = delete;
 
-  static auto &instance()
+  static auto& instance()
   {
     static ProgressEvent event;
     return event;
@@ -29,14 +28,14 @@ public:
 
   void reset()
   {
-    _current = 0;
-    _max = 0;
-    _now = 0;
-    _total = 0;
-    _speed = 0;
+    _current     = 0;
+    _max         = 0;
+    _now         = 0;
+    _total       = 0;
+    _speed       = 0;
     _status_code = 0;
-    _interupt = false;
-    _timeStep = 0;
+    _interupt    = false;
+    _timeStep    = 0;
   }
 
   inline void setTotalSteps(int steps) { _max = steps; }

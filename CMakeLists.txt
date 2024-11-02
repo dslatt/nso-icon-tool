@@ -31,16 +31,20 @@ if (USE_LIBROMFS)
     add_libromfs(${PROJECT_NAME} ${PROJECT_RESOURCES})
 endif ()
 
+# build borealis
 add_subdirectory(${BOREALIS_LIBRARY})
 
 find_package(Threads REQUIRED)
 list(APPEND APP_PLATFORM_LIB ${CMAKE_THREAD_LIBS_INIT})
 
 # setting src and include
-list(APPEND APP_PLATFORM_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-list(APPEND APP_PLATFORM_INCLUDE ${BOREALIS_LIBRARY}/include/borealis)
-list(APPEND APP_PLATFORM_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/library/cpp-generic-toolbox/include)
+list(APPEND APP_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB_RECURSE MAIN_SRC source/*.cpp)
+
+# external headers
+list(APPEND EXTERNAL_INCLUDE_DIRS ${BOREALIS_LIBRARY}/include)
+list(APPEND EXTERNAL_INCLUDE_DIRS ${BOREALIS_LIBRARY}/include/borealis)
+list(APPEND EXTERNAL_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/library/headers)
 
 set(PLATFORM_OPTION)
 if (PLATFORM_SWITCH)
@@ -57,16 +61,18 @@ if (PLATFORM_SWITCH)
         xxhash
     )
     list(APPEND MAIN_SRC ${BOREALIS_LIBRARY}/lib/platforms/switch/switch_wrapper.c)
-    list(APPEND APP_PLATFORM_INCLUDE ${DEVKITPRO}/portlibs/switch/include)
+    list(APPEND EXTERNAL_INCLUDE_DIRS ${DEVKITPRO}/portlibs/switch/include)
 endif ()
-
 
 # building target
 program_target(${PROJECT_NAME} "${MAIN_SRC}")
 
+# include dirs; mark external as system for warning suppression
+target_include_directories(${PROJECT_NAME} PRIVATE ${APP_INCLUDE})
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${EXTERNAL_INCLUDE_DIRS})
+
 # c++23 not supported by current toolchain cmake version; use compiler flags instead
 #set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
-
 
 # building release file
 if (PLATFORM_SWITCH)
@@ -88,6 +94,8 @@ include(git_watcher.cmake)
 CheckGit("${GIT_WORKING_DIR}" changed)
 GitStateChangedAction()
 
-target_include_directories(${PROJECT_NAME} PRIVATE demo ${APP_PLATFORM_INCLUDE})
-target_compile_options(${PROJECT_NAME} PRIVATE -ffunction-sections -fdata-sections -std=c++2b ${APP_PLATFORM_OPTION})
+# warnings
+# list(APPEND APP_PLATFORM_OPTION -Wall -Wextra -Wno-unused-parameter)
+
+target_compile_options(${PROJECT_NAME} PRIVATE -ffunction-sections -fdata-sections -std=c++2b  ${APP_PLATFORM_OPTION})
 target_link_libraries(${PROJECT_NAME} PRIVATE borealis ${APP_PLATFORM_LIB})

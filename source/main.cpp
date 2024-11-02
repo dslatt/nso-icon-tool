@@ -19,38 +19,31 @@
 #include <SDL2/SDL_main.h>
 #endif
 
-#include <borealis.hpp>
-#include <cstdlib>
-#include <string>
-#include <filesystem>
-
 #include <switch/services/acc.h>
 
-#include "view/main_view.hpp"
+#include <borealis.hpp>
+#include <cstdlib>
+#include <filesystem>
+#include <string>
+
 #include "activity/main_activity.hpp"
 #include "util/paths.hpp"
-
+#include "version.h"
+#include "view/main_view.hpp"
 #include "view/recycling_grid.hpp"
 
 using namespace brls::literals; // for _i18n
 namespace fs = std::filesystem;
 
-int main(int argc, char *argv[])
+using FileHandle = std::unique_ptr<std::FILE, decltype(&std::fclose)>;
+
+int main(int argc, char* argv[])
 {
   // We recommend to use INFO for real apps
-  for (int i = 1; i < argc; i++)
-  {
-    if (std::strcmp(argv[i], "-d") == 0)
-    { // Set log level
+  for (int i = 1; i < argc; i++) {
+    if (std::strcmp(argv[i], "-d") == 0) { // Set log level
       brls::Logger::setLogLevel(brls::LogLevel::LOG_DEBUG);
-    }
-    else if (std::strcmp(argv[i], "-o") == 0)
-    {
-      const char *path = (i + 1 < argc) ? argv[++i] : "borealis.log";
-      brls::Logger::setLogOutput(std::fopen(path, "w+"));
-    }
-    else if (std::strcmp(argv[i], "-v") == 0)
-    {
+    } else if (std::strcmp(argv[i], "-v") == 0) {
       brls::Application::enableDebuggingView(true);
     }
   }
@@ -58,18 +51,26 @@ int main(int argc, char *argv[])
   try {
     // create expected directories; these need to exist for the app to work
     fs::create_directories(paths::CollectionPath);
-  } catch(const std::exception &e) {
-    brls::Logger::error("Error creating expected directories; Cant continue: {}", e.what());
+  } catch (const std::exception& e) {
+    // brls::Logger::error("Error creating expected directories; Cant continue: {}", e.what());
     return EXIT_FAILURE;
   }
 
-#ifdef NDEBUG
-  brls::Logger::setLogOutput(fopen(std::string(paths::LogFilePath).c_str(), "w"));
-#endif
+  // create/assign log file
+  auto logHandle = FileHandle(std::fopen(std::string(paths::LogFilePath).c_str(), "w"), [](std::FILE* file) {
+    if (file == nullptr)
+      return EXIT_FAILURE;
+    std::fflush(file);
+    return std::fclose(file);
+  });
+  brls::Logger::setLogOutput(logHandle.get());
+
+  brls::Logger::info("nso-icon-tool {}", version::AppVersion);
+  brls::Logger::info(
+      "commit: {} ({} - {})", version::GitHeadSHA1, version::GitCommitDate, version::GitDirty ? "dirty" : "clean");
 
   // Init the app and i18n
-  if (!brls::Application::init())
-  {
+  if (!brls::Application::init()) {
     brls::Logger::error("Unable to init Borealis application");
     return EXIT_FAILURE;
   }
@@ -103,7 +104,7 @@ int main(int argc, char *argv[])
     // Run the app
     while (brls::Application::mainLoop())
       ;
-  } catch(const std::exception &e) {
+  } catch (const std::exception& e) {
     brls::Logger::error("Top level exception: {}", e.what());
     return EXIT_FAILURE;
   }

@@ -2,9 +2,7 @@
 
 #include <borealis.hpp>
 
-
-class AboutView: public brls::Box
-{
+class AboutView : public brls::Box {
 public:
   AboutView();
 

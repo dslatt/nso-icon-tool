@@ -1,17 +1,17 @@
 #pragma once
 
 #include <borealis.hpp>
+
+#include "state/image_state.hpp"
 #include "util/account.hpp"
 #include "util/image.hpp"
 #include "view/settings_view.hpp"
-#include "state/image_state.hpp"
 
-class MainView : public brls::Box
-{
+class MainView : public brls::Box {
 public:
   MainView();
 
-  static brls::View *create();
+  static brls::View* create();
 
   void handleUserSelection();
 

@@ -1,0 +1,68 @@
+{
+  "title": "nso-icon-tool",
+  "main": {
+    "change_user": "切换用户",
+    "config": "配置",
+    "settings": "设置",
+    "icon_components": "图标组件",
+    "other": "其他",
+    "custom_image": "自定义",
+    "frame": "边框",
+    "character": "图标",
+    "background": "背景",
+    "new_icon": "新图标",
+    "apply": "应用",
+    "select_game": "选择游戏",
+    "available_images": "可用图像",
+    "collection_load": "已添加图标",
+    "confirm_delete": "删除"
+  },
+  "settings": {
+    "title": "设置",
+    "icon_cache": {
+      "label": "本地图标库",
+      "yes": "已找到",
+      "no": "未找到",
+      "last_checked": "上次查看: {}",
+      "current_version": "最新版本: {} ({})",
+      "check_updates": "查看更新",
+      "update_available": "可用更新: {} ({})",
+      "download_update": "下载并更新",
+      "never": "从未",
+      "none": "空"
+    },
+    "toggles": {
+      "label": "设置",
+      "debug": "调试模式",
+      "overwrite": "更新覆盖旧文件",
+      "about": "关于"
+    },
+    "version": {
+      "label": "版本",
+      "version": "版本: {}",
+      "author": "作者: {}",
+      "commit": "提交: {}",
+      "commit_clean": "clean",
+      "commit_dirty": "dirty",
+      "commit_date": "日期: {}"
+    },
+    "thanks_label": "感谢",
+    "thanks": "▼ Thanks to nadrino for cpp-generic-toolbox library\n▼ Thanks to Natinusala, xfangfang and XITRIX for borealis library\n▼ Thanks to HamletDuFromage (AIO-Switch-Updater) and PoloNX (SimpleModDownloader)\n▼ Special thanks to henry-debruin for creating nso-icons."
+  },
+  "download": {
+    "title": "下载图标库",
+    "downloading": "下载中:",
+    "waiting": "等待中:",
+    "downloaded": "已下载:",
+    "extracting": "解压中:",
+    "extracted": "已解压:",
+    "back": "返回",
+    "path_to_path": "{} 解压到 {}"
+  },
+  "errors": {
+    "insufficient_storage": "SD卡容量不足",
+    "nothing": "找不到文件!",
+    "nothing_icon_cache": "找不到可用图标! 检查已下载的内容.",
+    "nothing_images": "找不到可用图像! 是否已将图片放进 \"{}\"?"
+  }
+}

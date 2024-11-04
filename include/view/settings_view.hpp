@@ -1,24 +1,18 @@
 #pragma once
 
 #include <borealis.hpp>
-#include <map>
 #include <chrono>
+#include <map>
 
-enum class UpdateState
-{
-  CHECK = 0,
-  UPDATE
-};
+enum class UpdateState { CHECK = 0, UPDATE };
 
-struct SettingsData
-{
+struct SettingsData {
   bool overwriteDuringExtract = false;
 };
 
-class SettingsView : public brls::Box
-{
+class SettingsView : public brls::Box {
 public:
-  SettingsView(SettingsData &settings);
+  SettingsView(SettingsData& settings);
 
   BRLS_BIND(brls::BooleanCell, debug, "debug");
   BRLS_BIND(brls::BooleanCell, extract_overwrite, "extract_overwrite");
@@ -33,10 +27,10 @@ public:
   std::chrono::time_point<std::chrono::steady_clock> lastCheck;
   UpdateState updateState = UpdateState::CHECK;
 
-  std::map<std::string, std::string> data = {};
+  std::map<std::string, std::string> data      = {};
   std::map<std::string, std::string> cacheData = {};
 
-  SettingsData &settings;
+  SettingsData& settings;
 
   // static brls::View *create();
 };

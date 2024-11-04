@@ -2,18 +2,15 @@
 
 Image empty(256, 256);
 
-
-ImageState::ImageState() : frame(256, 256),
-                           character(256, 256),
-                           background(256, 256),
-                           working(256, 256)
+ImageState::ImageState()
+    : frame(256, 256)
+    , character(256, 256)
+    , background(256, 256)
+    , working(256, 256)
 {
 }
 
-void ImageState::merge()
-{
-  Image::merge(frame, character, background, working);
-}
+void ImageState::merge() { Image::merge(frame, character, background, working); }
 
 void ImageState::resize()
 {

@@ -3,8 +3,7 @@
 #include <borealis.hpp>
 #include <string>
 
-class EmptyMessage : public brls::Box
-{
+class EmptyMessage : public brls::Box {
 public:
   EmptyMessage(std::string message);
 

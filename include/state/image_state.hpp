@@ -2,8 +2,7 @@
 
 #include "util/image.hpp"
 
-class ImageState
-{
+class ImageState {
 public:
   ImageState();
   Image frame, character, background, working;

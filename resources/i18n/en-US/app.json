@@ -47,7 +47,7 @@
       "commit_date": "Commit Date: {}"
     },
     "thanks_label": "Thanks",
-    "thanks": "▼ Thanks to nadrino for cpp-generic-toolbox library\n▼ Thanks to Natinusala, xfangfang and XITRIX for borealis library\n▼ Thanks to HamletDuFromage (AIO-Switch-Updater) and PoloNX (SimpleModDownloader)\n▼ Special thanks to henry-debruin for creating nso-icons."
+    "thanks": "▼ Thanks to Natinusala, xfangfang and XITRIX for borealis library\n▼ Thanks to HamletDuFromage (AIO-Switch-Updater) and PoloNX (SimpleModDownloader)\n▼ Special thanks to henry-debruin for creating nso-icons."
   },
   "download": {
     "title": "Downloading and Extracting Icons...",
